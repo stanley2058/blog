@@ -38,6 +38,15 @@ export default function DesignSystem() {
 
       <CodeBlock lang="tsx">
         {[
+          '<Text variant="h1"># H1 title</Text>',
+          '<Text variant="h2">## H2 title</Text>',
+          '<Text variant="h3">### H3 title</Text>',
+          '<Text variant="h4">#### H4 title</Text>',
+          '<Text variant="h5">##### H5 title</Text>',
+          '<Text variant="h6">###### H6 title</Text>',
+          '<Text variant="lg">Large text</Text>',
+          '<Text variant="sm">Small text</Text>',
+          '<Text variant="body">Body text</Text>',
           '<Text variant="body" className="text-primary-foreground bg-destructive">',
           "  Destructive",
           "</Text>",
