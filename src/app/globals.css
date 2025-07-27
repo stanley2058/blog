@@ -3,6 +3,8 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@config '../../tailwind.config.ts';
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -41,6 +43,21 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  --color-ctp-rosewater: var(--ctp-rosewater);
+  --color-ctp-flamingo: var(--ctp-flamingo);
+  --color-ctp-pink: var(--ctp-pink);
+  --color-ctp-mauve: var(--ctp-mauve);
+  --color-ctp-red: var(--ctp-red);
+  --color-ctp-maroon: var(--ctp-maroon);
+  --color-ctp-peach: var(--ctp-peach);
+  --color-ctp-yellow: var(--ctp-yellow);
+  --color-ctp-green: var(--ctp-green);
+  --color-ctp-teal: var(--ctp-teal);
+  --color-ctp-sky: var(--ctp-sky);
+  --color-ctp-sapphire: var(--ctp-sapphire);
+  --color-ctp-blue: var(--ctp-blue);
+  --color-ctp-lavender: var(--ctp-lavender);
 }
 
 :root {
@@ -76,6 +93,21 @@
   --sidebar-accent-foreground: oklch(0.435236 0.0432002 279.4944798);
   --sidebar-border: oklch(0.8083056 0.0174638 271.1704166);
   --sidebar-ring: oklch(0.8083056 0.0174638 271.1704166);
+
+  --ctp-rosewater: oklch(0.7174236 0.1033271 33.3332498);
+  --ctp-flamingo: oklch(0.6867467 0.1258371 20.8365401);
+  --ctp-pink: oklch(0.7254225 0.173209 338.3710808);
+  --ctp-mauve: oklch(0.554214 0.2504576 296.9546261);
+  --ctp-red: oklch(0.5500124 0.2154634 19.7958981);
+  --ctp-maroon: oklch(0.6272723 0.1946378 20.2565528);
+  --ctp-peach: oklch(0.6920242 0.2035334 42.5132861);
+  --ctp-yellow: oklch(0.7099271 0.1483947 67.88552);
+  --ctp-green: oklch(0.6283336 0.1784076 140.405744);
+  --ctp-teal: oklch(0.6100919 0.0995179 200.6768942);
+  --ctp-sky: oklch(0.686808 0.1458743 235.3393862);
+  --ctp-sapphire: oklch(0.6496363 0.107288 213.2325189);
+  --ctp-blue: oklch(0.558551 0.2245882 262.1411873);
+  --ctp-lavender: oklch(0.6641005 0.1747475 273.2126635);
 }
 
 .dark {
@@ -110,6 +142,21 @@
   --sidebar-accent-foreground: oklch(0.8788557 0.0425205 272.0854694);
   --sidebar-border: oklch(0.4039262 0.031835 279.887916);
   --sidebar-ring: oklch(0.4039262 0.031835 279.887916);
+
+  --ctp-rosewater: oklch(0.9212794 0.0243471 30.9677613);
+  --ctp-flamingo: oklch(0.883059 0.0407041 17.8550883);
+  --ctp-pink: oklch(0.8694126 0.0761394 335.9349155);
+  --ctp-mauve: oklch(0.7865191 0.1191432 304.4279314);
+  --ctp-red: oklch(0.7566725 0.1288966 2.4136272);
+  --ctp-maroon: oklch(0.77812 0.0920653 8.4503315);
+  --ctp-peach: oklch(0.8205616 0.1034591 52.6328422);
+  --ctp-yellow: oklch(0.9177893 0.0705412 85.9914778);
+  --ctp-green: oklch(0.8574621 0.1090626 142.5625777);
+  --ctp-teal: oklch(0.8563647 0.0796734 182.7781965);
+  --ctp-sky: oklch(0.8476582 0.0833467 209.9687394);
+  --ctp-sapphire: oklch(0.7883167 0.0968468 229.6590649);
+  --ctp-blue: oklch(0.768125 0.1106966 259.6684387);
+  --ctp-lavender: oklch(0.8153704 0.0914778 277.39179);
 }
 
 @layer base {
