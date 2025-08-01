@@ -5,12 +5,16 @@ import { cn } from "@/lib/utils";
 export async function CodeBlock({
   children,
   lang,
+  noAutoTrim,
 }: {
   children: string;
   lang: BundledLanguage;
+  noAutoTrim?: boolean;
 }) {
+  if (!noAutoTrim) children = children.trim();
+
   const html = await codeToHtml(children, {
-    lang: lang,
+    lang,
     themes: {
       light: "catppuccin-latte",
       dark: "catppuccin-mocha",
@@ -31,14 +35,14 @@ export async function CodeBlock({
         variant="xs"
         className={cn(
           "absolute top-2 right-2 font-bold text-muted-foreground/70",
-          "opacity-100 group-hover/code-block:opacity-0",
+          "opacity-60 group-hover/code-block:opacity-100",
           "transition-opacity duration-150 ease-in-out",
         )}
       >
         {lang}
       </Text>
       <div
-        className="rounded-md p-2 border border-border border-solid"
+        className="rounded-md p-2 border border-border border-solid overflow-auto"
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>
