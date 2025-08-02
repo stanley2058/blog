@@ -7,7 +7,7 @@ export default async function Page({
   const { default: Post } = await import(`@/content/${slug}.mdx`);
 
   return (
-    <article className="px-5 mx-5 md:max-w-[808px] md:mx-auto md:px-10">
+    <article>
       <Post />
     </article>
   );

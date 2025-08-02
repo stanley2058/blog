@@ -1,10 +1,14 @@
 import { CodeBlock } from "@/components/CodeBlock";
 import { CommandInline } from "@/components/CommandInline";
+import { Main } from "@/components/Main";
+import { Navbar } from "@/components/Navbar";
 import { Text } from "@/components/Text";
 
 export default function DesignSystem() {
   return (
-    <div className="mt-4 max-w-[720px] mx-auto px-4 flex flex-col gap-2 items-center justify-center font-mono">
+    <Main>
+      <Navbar />
+
       <Text variant="h1"># H1 title</Text>
       <Text variant="h2">## H2 title</Text>
       <Text variant="h3">### H3 title</Text>
@@ -76,6 +80,6 @@ export default function DesignSystem() {
           "</Text>",
         ].join("\n")}
       </CodeBlock>
-    </div>
+    </Main>
   );
 }
