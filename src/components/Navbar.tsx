@@ -1,6 +1,5 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import {
   LucideMonitor,
   LucideMoon,
@@ -12,6 +11,7 @@ import { usePathname } from "next/navigation";
 import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { useState } from "react";
+import { Circle } from "./Circle";
 
 export function Navbar() {
   const [showThemeSwitcher, setShowThemeSwitcher] = useState(false);
@@ -87,18 +87,5 @@ function NavLink({
       <Circle active={active} />
       {children}
     </Link>
-  );
-}
-
-function Circle({ active }: { active?: boolean }) {
-  return (
-    <span
-      className={cn(
-        "rounded-full flex size-2",
-        "border border-solid border-ctp-yellow",
-        { "bg-ctp-yellow": active },
-      )}
-      aria-hidden
-    />
   );
 }

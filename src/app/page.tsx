@@ -1,6 +1,7 @@
-import { CommandInline } from "@/components/CommandInline";
+import { BlogActions } from "@/components/BlogActions";
 import { Main } from "@/components/Main";
 import { Navbar } from "@/components/Navbar";
+import { TypingCommandInline } from "@/components/TypingCommandInline";
 import { WhoAmICard } from "@/components/WhoAmICard";
 
 export default function Home() {
@@ -11,7 +12,9 @@ export default function Home() {
       <div className="flex flex-col gap-3">
         <WhoAmICard />
 
-        <CommandInline>blog list</CommandInline>
+        <TypingCommandInline command="blog actions" frameInterval={35}>
+          <BlogActions />
+        </TypingCommandInline>
       </div>
     </Main>
   );

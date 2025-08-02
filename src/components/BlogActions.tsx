@@ -1,0 +1,130 @@
+"use client";
+
+import { cn } from "@/lib/utils";
+import { Circle } from "./Circle";
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { TextLoading } from "./TextLoading";
+
+const actions = [
+  {
+    key: "list-articles",
+    title: "List articles",
+    action: 'Go to "articles"',
+    href: "/articles",
+  },
+  {
+    key: "see-about",
+    title: "See about",
+    action: 'Go to "about"',
+    href: "/about",
+  },
+  {
+    key: "see-design-system",
+    title: "See design system",
+    action: 'Go to "design system"',
+    href: "/design-system",
+  },
+] as const;
+type ActionType = (typeof actions)[number]["key"];
+
+export function BlogActions() {
+  const [selectedAction, setSelectedAction] = useState<ActionType>(
+    actions[0].key,
+  );
+  const selectedActionEntry = actions.find((a) => a.key === selectedAction)!;
+  const [showLoading, setShowLoading] = useState(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowLoading(false), 250);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (showLoading) return <TextLoading variant="dot-inverse" interval={250} />;
+
+  return (
+    <div
+      className="flex flex-col pl-3"
+      onKeyDown={(e) => {
+        if (e.key === "Enter") router.push(selectedActionEntry.href);
+      }}
+    >
+      {actions.map((action, i) => (
+        <ActionEntry
+          key={action.key}
+          active={selectedAction === action.key}
+          onSelectSelf={() => setSelectedAction(action.key)}
+          onSelectPrev={() => {
+            setSelectedAction(actions[Math.max(i - 1, 0)].key);
+          }}
+          onSelectNext={() => {
+            setSelectedAction(actions[Math.min(i + 1, actions.length - 1)].key);
+          }}
+        >
+          {action.title}
+        </ActionEntry>
+      ))}
+
+      <button
+        className={cn(
+          "cursor-pointer w-fit mt-2 text-ctp-yellow hocus:font-semibold",
+          "focus:outine-none focus-visible:outline-none",
+        )}
+        onClick={() => router.push(selectedActionEntry.href)}
+      >
+        Enter ({selectedActionEntry.action})
+      </button>
+    </div>
+  );
+}
+
+function ActionEntry({
+  active,
+  children,
+  onSelectSelf,
+  onSelectNext,
+  onSelectPrev,
+}: {
+  active?: boolean;
+  children: React.ReactNode;
+  onSelectSelf: () => void;
+  onSelectNext: () => void;
+  onSelectPrev: () => void;
+}) {
+  const btnRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!active) return;
+    btnRef.current?.focus();
+  }, [active]);
+
+  return (
+    <button
+      ref={btnRef}
+      className={cn(
+        "flex flex-row items-center gap-2 cursor-pointer w-fit",
+        "focus:outine-none focus-visible:outline-none",
+        {
+          "text-ctp-yellow": active,
+        },
+      )}
+      onKeyDown={(e) => {
+        if (e.key === "ArrowUp" || e.key === "k") {
+          e.preventDefault();
+          e.stopPropagation();
+          onSelectPrev();
+        }
+        if (e.key === "ArrowDown" || e.key === "j") {
+          e.preventDefault();
+          e.stopPropagation();
+          onSelectNext();
+        }
+      }}
+      onClick={onSelectSelf}
+      onFocus={onSelectSelf}
+    >
+      <Circle active={active} />
+      <span>{children}</span>
+    </button>
+  );
+}

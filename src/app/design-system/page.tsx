@@ -3,6 +3,8 @@ import { CommandInline } from "@/components/CommandInline";
 import { Main } from "@/components/Main";
 import { Navbar } from "@/components/Navbar";
 import { Text } from "@/components/Text";
+import { TextLoading } from "@/components/TextLoading";
+import { TypingCommandInline } from "@/components/TypingCommandInline";
 
 export default function DesignSystem() {
   return (
@@ -64,6 +66,19 @@ export default function DesignSystem() {
         <span className="flex size-4 bg-ctp-lavender" />
       </div>
 
+      <span className="flex flex-row gap-1">
+        <TextLoading />
+        <TextLoading rotation="counterclockwise" />
+        <TextLoading variant="dot" interval={750} />
+        <TextLoading variant="dot" interval={750} rotation="counterclockwise" />
+        <TextLoading variant="dot-inverse" interval={1000} />
+        <TextLoading
+          variant="dot-inverse"
+          interval={1000}
+          rotation="counterclockwise"
+        />
+      </span>
+
       <CodeBlock lang="tsx">
         {[
           '<Text variant="h1"># H1 title</Text>',
@@ -80,6 +95,15 @@ export default function DesignSystem() {
           "</Text>",
         ].join("\n")}
       </CodeBlock>
+
+      <TypingCommandInline command="uptime -s">
+        {(() => {
+          const isoDate = new Date().toISOString();
+          const date = isoDate.split("T")[0];
+          const time = isoDate.split("T")[1].split(".")[0];
+          return `${date} ${time}`;
+        })()}
+      </TypingCommandInline>
     </Main>
   );
 }
