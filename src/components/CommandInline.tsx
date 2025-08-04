@@ -17,7 +17,7 @@ export function CommandInline({
     const binaryName = segments[0];
     content = (
       <>
-        <span className="text-ctp-green">{binaryName}</span>{" "}
+        <span className={cn("text-ctp-green", className)}>{binaryName}</span>{" "}
         {segments.slice(1).join(" ")}
       </>
     );

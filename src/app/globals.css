@@ -5,6 +5,25 @@
 
 @config '../../tailwind.config.ts';
 
+@theme {
+  --animate-cursor-pulse: cursor-pulse 1.5s infinite;
+
+  @keyframes cursor-pulse {
+    0% {
+      opacity: 1;
+    }
+    49% {
+      opacity: 1;
+    }
+    51% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);

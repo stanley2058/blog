@@ -7,10 +7,10 @@ import {
 import { ReactNode } from "react";
 import { CommandInline } from "./CommandInline";
 
-export function WhoAmICard() {
+export function WhoAmICard({ headless }: { headless?: boolean }) {
   return (
     <section className="flex flex-col gap-1">
-      <CommandInline>whoami</CommandInline>
+      {!headless && <CommandInline>whoami</CommandInline>}
       <div className="border border-solid border-border px-4 py-2 rounded-md whitespace-pre-wrap">
         <TextRow icon={<LucideIdCard className="size-4 inline" />}>
           <span className="font-semibold">Stanley Wang (Yu-Te Wang)</span>

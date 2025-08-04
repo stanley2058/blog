@@ -28,12 +28,18 @@ const actions = [
 ] as const;
 type ActionType = (typeof actions)[number]["key"];
 
-export function BlogActions() {
+export function BlogActions({
+  loading = true,
+  onCancel,
+}: {
+  loading?: boolean;
+  onCancel?: () => void;
+}) {
   const [selectedAction, setSelectedAction] = useState<ActionType>(
     actions[0].key,
   );
   const selectedActionEntry = actions.find((a) => a.key === selectedAction)!;
-  const [showLoading, setShowLoading] = useState(true);
+  const [showLoading, setShowLoading] = useState(loading);
   const router = useRouter();
 
   useEffect(() => {
@@ -48,6 +54,7 @@ export function BlogActions() {
       className="flex flex-col pl-3"
       onKeyDown={(e) => {
         if (e.key === "Enter") router.push(selectedActionEntry.href);
+        if (e.ctrlKey && e.key === "c") onCancel?.();
       }}
     >
       {actions.map((action, i) => (

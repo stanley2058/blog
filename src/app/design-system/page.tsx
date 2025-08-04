@@ -2,6 +2,7 @@ import { CodeBlock } from "@/components/CodeBlock";
 import { CommandInline } from "@/components/CommandInline";
 import { Main } from "@/components/Main";
 import { Navbar } from "@/components/Navbar";
+import { Terminal } from "@/components/Terminal";
 import { Text } from "@/components/Text";
 import { TextLoading } from "@/components/TextLoading";
 import { TypingCommandInline } from "@/components/TypingCommandInline";
@@ -104,6 +105,8 @@ export default function DesignSystem() {
           return `${date} ${time}`;
         })()}
       </TypingCommandInline>
+
+      <Terminal />
     </Main>
   );
 }
