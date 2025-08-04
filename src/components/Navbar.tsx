@@ -12,12 +12,19 @@ import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { useState } from "react";
 import { Circle } from "./Circle";
+import { cn } from "@/lib/utils";
 
-export function Navbar() {
+export function Navbar({ className }: { className?: string }) {
   const [showThemeSwitcher, setShowThemeSwitcher] = useState(false);
   const { theme, setTheme } = useTheme();
   return (
-    <nav className="border border-border border-solid rounded-md py-2 px-4 bg-background flex flex-row gap-6">
+    <nav
+      className={cn(
+        "z-10 py-1 pl-5 pr-2 bg-background flex flex-row gap-6",
+        "border border-border border-solid rounded-md",
+        className,
+      )}
+    >
       <NavLink href="/">Home</NavLink>
       <NavLink href="/articles">Blog</NavLink>
       <NavLink href="/about">About</NavLink>

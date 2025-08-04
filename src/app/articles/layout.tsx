@@ -8,7 +8,7 @@ export default function BlogLayout({
 }>) {
   return (
     <Main>
-      <Navbar />
+      <Navbar className="sticky top-2.5" />
       {children}
     </Main>
   );
