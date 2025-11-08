@@ -9,6 +9,14 @@ const nextConfig: NextConfig = {
     },
     turbopackFileSystemCacheForDev: true,
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "hackmd.io",
+      },
+    ],
+  },
   cacheComponents: true,
 };
 

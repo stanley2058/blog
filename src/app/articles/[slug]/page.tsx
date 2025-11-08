@@ -1,3 +1,7 @@
+import fs from "node:fs/promises";
+import path from "node:path";
+import { TableOfContent } from "@/components/TableOfContent";
+
 export default async function Page({
   params,
 }: {
@@ -7,14 +11,15 @@ export default async function Page({
   const { default: Post } = await import(`@/content/${slug}.mdx`);
 
   return (
-    <article>
+    <article className="relative [&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-18">
+      <TableOfContent />
       <Post />
     </article>
   );
 }
 
-export function generateStaticParams() {
-  return [{ slug: "zero-angular" }];
-}
+export async function generateStaticParams() {
+  const files = await fs.readdir(path.join(process.cwd(), "src/content/"));
 
-export const dynamicParams = false;
+  return files.map((file) => ({ slug: file.replace(".mdx", "") }));
+}

@@ -1,5 +1,6 @@
 "use client";
 
+import { useMediaQuery } from "@react-hookz/web";
 import {
   LucideMonitor,
   LucideMoon,
@@ -9,36 +10,68 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Circle } from "./Circle";
 import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 export function Navbar({ className }: { className?: string }) {
   const [showThemeSwitcher, setShowThemeSwitcher] = useState(false);
   const { theme, setTheme } = useTheme();
+  const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
+  const setThemeWithTransition = useCallback(
+    (theme: string) => {
+      const transition = document.startViewTransition?.(() => {
+        setTheme(theme);
+      });
+
+      if (!transition) return setTheme(theme);
+    },
+    [setTheme],
+  );
+
   return (
     <nav
       className={cn(
-        "z-10 flex flex-row gap-6 bg-background/75 py-1 pr-2 pl-5",
+        "z-10 flex flex-row gap-4 bg-background/75 py-1 pr-2 pl-5 sm:gap-6",
         "rounded-xl border border-border border-solid backdrop-blur-lg",
         className,
       )}
     >
       <NavLink href="/">Home</NavLink>
       <NavLink href="/articles">Blog</NavLink>
-      <NavLink href="/about">About</NavLink>
-      <NavLink href="/design-system">Design</NavLink>
+      <NavLink className="hidden sm:flex" href="/about">
+        About
+      </NavLink>
+      <NavLink className="hidden md:flex" href="/design-system">
+        Design
+      </NavLink>
 
       <span className="grow" aria-hidden />
 
       <span className="flex flex-row items-center justify-center gap-0.5">
-        {showThemeSwitcher && (
-          <>
+        <Popover open={showThemeSwitcher} onOpenChange={setShowThemeSwitcher}>
+          <PopoverTrigger asChild>
+            <Button
+              variant={showThemeSwitcher ? "outline" : "ghost"}
+              size="icon"
+              onClick={() => setShowThemeSwitcher(!showThemeSwitcher)}
+              className="relative"
+            >
+              <LucidePaintBucket />
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent
+            side={isSmallDevice ? "bottom" : "left"}
+            sideOffset={isSmallDevice ? 8 : 4}
+            align={isSmallDevice ? "end" : "center"}
+            className="flex w-fit flex-row gap-2 p-1 md:p-0"
+          >
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTheme("system")}
+              onClick={() => setThemeWithTransition("system")}
               disabled={!theme || theme === "system"}
             >
               <LucideMonitor />
@@ -47,7 +80,7 @@ export function Navbar({ className }: { className?: string }) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTheme("light")}
+              onClick={() => setThemeWithTransition("light")}
               disabled={theme === "light"}
             >
               <LucideSun />
@@ -56,22 +89,13 @@ export function Navbar({ className }: { className?: string }) {
             <Button
               variant="ghost"
               size="icon"
-              onClick={() => setTheme("dark")}
+              onClick={() => setThemeWithTransition("dark")}
               disabled={theme === "dark"}
             >
               <LucideMoon />
             </Button>
-            <span>|</span>
-          </>
-        )}
-
-        <Button
-          variant={showThemeSwitcher ? "outline" : "ghost"}
-          size="icon"
-          onClick={() => setShowThemeSwitcher(!showThemeSwitcher)}
-        >
-          <LucidePaintBucket />
-        </Button>
+          </PopoverContent>
+        </Popover>
       </span>
     </nav>
   );
@@ -79,9 +103,11 @@ export function Navbar({ className }: { className?: string }) {
 
 function NavLink({
   href,
+  className,
   children,
 }: {
   href: string;
+  className?: string;
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -89,7 +115,10 @@ function NavLink({
   return (
     <Link
       href={href}
-      className="flex flex-row items-center justify-center gap-1.5"
+      className={cn(
+        "flex flex-row items-center justify-center gap-1.5",
+        className,
+      )}
     >
       <Circle active={active} />
       {children}

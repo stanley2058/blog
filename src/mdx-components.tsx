@@ -1,6 +1,8 @@
 import type { MDXComponents } from "mdx/types";
+import Image from "next/image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import { Img } from "./components/Img";
 import { Text } from "./components/Text";
 import {
   Table,
@@ -126,6 +128,7 @@ const components: MDXComponents = {
       {...props}
     />
   ),
+  img: (props) => <Img {...props} />,
 };
 
 export function useMDXComponents(): MDXComponents {

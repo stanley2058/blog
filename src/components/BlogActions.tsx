@@ -77,7 +77,7 @@ export function BlogActions({
 
       <button
         className={cn(
-          "mt-2 w-fit cursor-pointer hocus:font-semibold text-ctp-yellow",
+          "mt-2 w-fit hocus:font-semibold text-ctp-yellow",
           "focus:outine-none focus-visible:outline-none",
         )}
         onClick={() => router.push(selectedActionEntry.href)}
@@ -111,7 +111,7 @@ function ActionEntry({
     <button
       ref={btnRef}
       className={cn(
-        "flex w-fit cursor-pointer flex-row items-center gap-2",
+        "flex w-fit flex-row items-center gap-2",
         "focus:outine-none focus-visible:outline-none",
         {
           "text-ctp-yellow": active,
