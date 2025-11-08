@@ -12,6 +12,7 @@ export async function CodeBlock({
   lang: BundledLanguage;
   noAutoTrim?: boolean;
 }) {
+  "use cache";
   if (!noAutoTrim) children = children.trim();
 
   const html = await codeToHtml(children, {
@@ -26,6 +27,7 @@ export async function CodeBlock({
     <div
       className={cn(
         "group/code-block relative",
+        "[&_code]:font-mono [&_code]:text-base",
         "[&_code]:[counter-increment:step_0] [&_code]:[counter-reset:step]",
         "[&_code_.line::before]:[content:counter(step)] [&_code_.line::before]:[counter-increment:step]",
         "[&_code_.line::before]:mr-6 [&_code_.line::before]:inline-block [&_code_.line::before]:w-4",
@@ -46,7 +48,7 @@ export async function CodeBlock({
       <CodeBlockCopyButton code={children} />
 
       <div
-        className="overflow-auto rounded-xl border border-border border-solid p-2"
+        className="overflow-auto rounded-xl border border-border border-solid bg-ctp-bg p-2"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: necessary for code highlighting
         dangerouslySetInnerHTML={{ __html: html }}
       />

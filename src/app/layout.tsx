@@ -19,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${berkeleyMono.variable} font-mono antialiased`}>
+    <html lang="en" className={berkeleyMono.variable} suppressHydrationWarning>
+      <body className="font-mono antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>

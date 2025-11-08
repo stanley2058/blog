@@ -97,16 +97,23 @@ export default function DesignSystem() {
         ].join("\n")}
       </CodeBlock>
 
-      <TypingCommandInline command="uptime -s">
-        {(() => {
-          const isoDate = new Date().toISOString();
-          const date = isoDate.split("T")[0];
-          const time = isoDate.split("T")[1].split(".")[0];
-          return `${date} ${time}`;
-        })()}
-      </TypingCommandInline>
+      <Uptime />
 
       <Terminal />
     </Main>
+  );
+}
+
+async function Uptime() {
+  "use cache";
+  return (
+    <TypingCommandInline command="uptime -s">
+      {(() => {
+        const isoDate = new Date().toISOString();
+        const date = isoDate.split("T")[0];
+        const time = isoDate.split("T")[1].split(".")[0];
+        return `${date} ${time}`;
+      })()}
+    </TypingCommandInline>
   );
 }
