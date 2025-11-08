@@ -1,7 +1,7 @@
 import type { MDXComponents } from "mdx/types";
-import { Text } from "./components/Text";
-import { ComponentProps, ReactNode } from "react";
 import Link from "next/link";
+import type { ComponentProps, ReactNode } from "react";
+import { Text } from "./components/Text";
 import {
   Table,
   TableBody,
@@ -23,13 +23,13 @@ const components: MDXComponents = {
     <Text
       id={toTitleId(children)}
       variant="h1"
-      className="relative mt-16 mb-8 pb-2 border-b-3 border-solid border-border"
+      className="relative mt-16 mb-8 border-border border-b-3 border-solid pb-2"
       {...props}
     >
       <a
         href={`#${toTitleId(children)}`}
         className={cn(
-          "absolute text-ctp-blue/80 left-0 -translate-x-[calc(100%+8px)] hocus:text-ctp-blue",
+          "-translate-x-[calc(100%+8px)] absolute left-0 hocus:text-ctp-blue text-ctp-blue/80",
           "transition-colors duration-200 ease-in-out",
         )}
       >
@@ -42,13 +42,13 @@ const components: MDXComponents = {
     <Text
       id={toTitleId(children)}
       variant="h2"
-      className="relative mt-12 mb-8 pb-1 border-b-2 border-solid border-border"
+      className="relative mt-12 mb-8 border-border border-b-2 border-solid pb-1"
       {...props}
     >
       <a
         href={`#${toTitleId(children)}`}
         className={cn(
-          "absolute text-ctp-blue/80 left-0 -translate-x-[calc(100%+6px)] hocus:text-ctp-blue",
+          "-translate-x-[calc(100%+6px)] absolute left-0 hocus:text-ctp-blue text-ctp-blue/80",
           "transition-colors duration-200 ease-in-out",
         )}
       >
@@ -61,13 +61,13 @@ const components: MDXComponents = {
     <Text
       id={toTitleId(children)}
       variant="h3"
-      className="relative mt-10 mb-8 pb-0.5 border-b border-solid border-border"
+      className="relative mt-10 mb-8 border-border border-b border-solid pb-0.5"
       {...props}
     >
       <a
         href={`#${toTitleId(children)}`}
         className={cn(
-          "absolute text-ctp-blue/80 left-0 -translate-x-[calc(100%+4px)] hocus:text-ctp-blue",
+          "-translate-x-[calc(100%+4px)] absolute left-0 hocus:text-ctp-blue text-ctp-blue/80",
           "transition-colors duration-200 ease-in-out",
         )}
       >
@@ -80,13 +80,13 @@ const components: MDXComponents = {
   h5: (props) => <Text variant="h5" className="my-6" {...props} />,
   h6: (props) => <Text variant="h6" className="my-6" {...props} />,
   p: (props) => <Text variant="p" className="my-6" {...props} />,
-  hr: (props) => <hr className="border-border border-solid my-4" {...props} />,
+  hr: (props) => <hr className="my-4 border-border border-solid" {...props} />,
   a: (props: ComponentProps<"a">) => {
     if (props.href?.startsWith("/")) {
       return (
         <Link
           href={props.href}
-          className="text-ctp-blue hocus:underline hocus:text-ctp-lavender"
+          className="hocus:text-ctp-lavender text-ctp-blue hocus:underline"
           {...props}
         />
       );
@@ -96,7 +96,7 @@ const components: MDXComponents = {
       return (
         <a
           href={props.href}
-          className="text-ctp-blue hocus:underline hocus:text-ctp-lavender"
+          className="hocus:text-ctp-lavender text-ctp-blue hocus:underline"
           {...props}
         />
       );
@@ -104,15 +104,15 @@ const components: MDXComponents = {
 
     return (
       <a
-        className="text-ctp-blue hocus:underline hocus:text-ctp-lavender"
+        className="hocus:text-ctp-lavender text-ctp-blue hocus:underline"
         target="_blank"
         rel="noopener noreferrer"
         {...props}
       />
     );
   },
-  ul: (props) => <ul className="list-disc ml-4" {...props} />,
-  ol: (props) => <ol className="list-decimal ml-7.5" {...props} />,
+  ul: (props) => <ul className="ml-4 list-disc" {...props} />,
+  ol: (props) => <ol className="ml-7.5 list-decimal" {...props} />,
   li: (props) => <li className="my-2" {...props} />,
   table: (props) => <Table {...props} />,
   thead: (props) => <TableHeader {...props} />,
@@ -122,7 +122,7 @@ const components: MDXComponents = {
   td: (props) => <TableCell {...props} />,
   code: (props) => (
     <code
-      className="border border-bolder border-solid px-1.5 py-0.5 rounded-sm text-ctp-green"
+      className="rounded-sm border border-bolder border-solid px-1.5 py-0.5 text-ctp-green"
       {...props}
     />
   ),

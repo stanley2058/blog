@@ -1,6 +1,6 @@
-import { cn } from "@/lib/utils";
 import { LucideChevronRight } from "lucide-react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 export function CommandInline({
   containerClassName,

@@ -1,11 +1,11 @@
 "use client";
 
-import { Fragment, ReactNode, useEffect, useRef, useState } from "react";
-import { WhoAmICard } from "./WhoAmICard";
 import { LucideChevronRight } from "lucide-react";
-import { CommandInline } from "./CommandInline";
+import { Fragment, type ReactNode, useEffect, useRef, useState } from "react";
 import { createStore, useStore } from "zustand";
 import { BlogActions } from "./BlogActions";
+import { CommandInline } from "./CommandInline";
+import { WhoAmICard } from "./WhoAmICard";
 
 const validCommands = [
   "whoami",
@@ -43,17 +43,20 @@ function handleRunCommand({
     case "clear":
       terminalState.getState().clearCommandEntries();
       return null;
-    case "blog":
+    case "blog": {
       const { promise, resolve } = Promise.withResolvers<void>();
       return {
         output: <BlogActions loading={false} onCancel={resolve} />,
         error: false,
         block: promise.then(() => {
           const { commandEntries } = terminalState.getState();
-          commandEntries.at(-1)!.output = null;
+          const last = commandEntries.at(-1);
+          if (!last) return;
+          last.output = null;
           terminalState.setState({ commandEntries: [...commandEntries] });
         }),
       };
+    }
     case "?":
     case "help":
     case "h":
@@ -62,22 +65,22 @@ function handleRunCommand({
           <div className="flex flex-col">
             <span className="font-semibold">Supported commands:</span>
             <span>
-              <span className="text-ctp-green font-semibold">whoami</span>
+              <span className="font-semibold text-ctp-green">whoami</span>
               {` show the whoami card`}
             </span>
             <span>
-              <span className="text-ctp-green font-semibold">history</span>
+              <span className="font-semibold text-ctp-green">history</span>
               {` show command history`}
             </span>
             <span>
-              <span className="text-ctp-green font-semibold">clear</span>
+              <span className="font-semibold text-ctp-green">clear</span>
               {` clear the terminal output`}
             </span>
             <span>
               {["?", "h", "help"].map((cmd, i) => (
                 <Fragment key={cmd}>
                   {i > 0 && ", "}
-                  <span className="text-ctp-green font-semibold">{cmd}</span>
+                  <span className="font-semibold text-ctp-green">{cmd}</span>
                 </Fragment>
               ))}
               {` show this help message`}
@@ -129,7 +132,7 @@ export function Terminal() {
   }, [blockedBy]);
 
   return (
-    <div className="w-full h-full">
+    <div className="h-full w-full">
       {commandEntries.map((entry, i) => (
         <div key={i}>
           <CommandInline className={entry.error ? "text-ctp-red" : undefined}>
@@ -193,21 +196,22 @@ function ShellInput({
 
   if (blocked) return null;
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: action redirection
     <div
       ref={containerRef}
-      className="group/shell-input w-full cursor-text grid grid-cols-[auto_1fr]"
+      className="group/shell-input grid w-full cursor-text grid-cols-[auto_1fr]"
       onClick={() => inputRef.current?.focus()}
     >
       <LucideChevronRight className="text-ctp-green" />
-      <span className="whitespace-pre-wrap text-wrap wrap-anywhere max-w-full">
+      <span className="wrap-anywhere max-w-full whitespace-pre-wrap text-wrap">
         {command && (
           <span className={commandValid ? "text-ctp-green" : "text-ctp-red"}>
             {command}
           </span>
         )}
-        {args?.length ? " " + args.join(" ") : ""}
+        {args?.length ? ` ${args.join(" ")}` : ""}
 
-        <span className="group-focus-within/shell-input:animate-none animate-cursor-pulse">
+        <span className="animate-cursor-pulse group-focus-within/shell-input:animate-none">
           █
         </span>
       </span>
@@ -216,7 +220,7 @@ function ShellInput({
         ref={inputRef}
         value={inputText}
         onChange={(e) => setInputText(e.target.value)}
-        className="absolute w-0 opacity-0 z-[-1]"
+        className="absolute z-[-1] w-0 opacity-0"
         onFocus={() => {
           if (!inputRef.current) return;
           inputRef.current.selectionStart = inputRef.current.value.length;

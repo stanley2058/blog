@@ -1,5 +1,5 @@
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
-import { ComponentProps } from "react";
 
 const textVariants = {
   h1: cn("text-4xl font-extrabold"),

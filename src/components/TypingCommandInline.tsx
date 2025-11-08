@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode, useEffect, useState } from "react";
+import { type ReactNode, useEffect, useState } from "react";
 import { CommandInline } from "./CommandInline";
 
 export function TypingCommandInline({
@@ -26,7 +26,7 @@ export function TypingCommandInline({
           setDisplayText(command);
           return;
         }
-        buffer = buffer.slice(0, buffer.length - 1) + text[0] + "█";
+        buffer = `${buffer.slice(0, buffer.length - 1) + text[0]}█`;
         text = text.slice(1);
         setDisplayText(buffer);
         timer = setTimeout(() => {

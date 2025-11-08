@@ -18,7 +18,7 @@ export default function DesignSystem() {
       <Text variant="h4">#### H4 title</Text>
       <Text variant="h5">##### H5 title</Text>
       <Text variant="h6">###### H6 title</Text>
-      <div className="flex flex-row gap-2 items-baseline">
+      <div className="flex flex-row items-baseline gap-2">
         <Text variant="lg">Large text</Text>
         <Text variant="body">Body text</Text>
         <Text variant="sm">Small text</Text>
@@ -31,26 +31,26 @@ export default function DesignSystem() {
       </Text>
 
       <div className="flex flex-row gap-2">
-        <Text variant="body" className="text-primary-foreground bg-primary">
+        <Text variant="body" className="bg-primary text-primary-foreground">
           Primary
         </Text>
-        <Text variant="body" className="text-secondary-foreground bg-secondary">
+        <Text variant="body" className="bg-secondary text-secondary-foreground">
           Secondary
         </Text>
-        <Text variant="body" className="text-muted-foreground bg-muted">
+        <Text variant="body" className="bg-muted text-muted-foreground">
           Muted
         </Text>
-        <Text variant="body" className="text-accent-foreground bg-accent">
+        <Text variant="body" className="bg-accent text-accent-foreground">
           Accent
         </Text>
-        <Text variant="body" className="text-primary-foreground bg-destructive">
+        <Text variant="body" className="bg-destructive text-primary-foreground">
           Destructive
         </Text>
       </div>
 
       <CommandInline>ls -al</CommandInline>
 
-      <div className="grid grid-rows-2 grid-cols-7 gap-2">
+      <div className="grid grid-cols-7 grid-rows-2 gap-2">
         <span className="flex size-4 bg-ctp-rosewater" />
         <span className="flex size-4 bg-ctp-flamingo" />
         <span className="flex size-4 bg-ctp-pink" />

@@ -4,8 +4,8 @@ export function Circle({ active }: { active?: boolean }) {
   return (
     <span
       className={cn(
-        "rounded-full flex size-2",
-        "border border-solid border-ctp-yellow",
+        "flex size-2 rounded-full",
+        "border border-ctp-yellow border-solid",
         { "bg-ctp-yellow": active },
       )}
       aria-hidden

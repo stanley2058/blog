@@ -8,11 +8,11 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Button } from "./ui/button";
 import { useTheme } from "next-themes";
 import { useState } from "react";
-import { Circle } from "./Circle";
 import { cn } from "@/lib/utils";
+import { Circle } from "./Circle";
+import { Button } from "./ui/button";
 
 export function Navbar({ className }: { className?: string }) {
   const [showThemeSwitcher, setShowThemeSwitcher] = useState(false);
@@ -20,8 +20,8 @@ export function Navbar({ className }: { className?: string }) {
   return (
     <nav
       className={cn(
-        "z-10 py-1 pl-5 pr-2 bg-background flex flex-row gap-6",
-        "border border-border border-solid rounded-md",
+        "z-10 flex flex-row gap-6 bg-background/75 py-1 pr-2 pl-5",
+        "rounded-xl border border-border border-solid backdrop-blur-lg",
         className,
       )}
     >
@@ -32,7 +32,7 @@ export function Navbar({ className }: { className?: string }) {
 
       <span className="grow" aria-hidden />
 
-      <span className="flex flex-row gap-0.5 justify-center items-center">
+      <span className="flex flex-row items-center justify-center gap-0.5">
         {showThemeSwitcher && (
           <>
             <Button
@@ -89,7 +89,7 @@ function NavLink({
   return (
     <Link
       href={href}
-      className="flex flex-row justify-center items-center gap-1.5"
+      className="flex flex-row items-center justify-center gap-1.5"
     >
       <Circle active={active} />
       {children}

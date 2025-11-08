@@ -1,6 +1,7 @@
-import { BundledLanguage, codeToHtml } from "shiki";
-import { Text } from "./Text";
+import { type BundledLanguage, codeToHtml } from "shiki";
 import { cn } from "@/lib/utils";
+import { CodeBlockCopyButton } from "./CodeBlockCopyButton";
+import { Text } from "./Text";
 
 export async function CodeBlock({
   children,
@@ -25,9 +26,9 @@ export async function CodeBlock({
     <div
       className={cn(
         "group/code-block relative",
-        "[&_code]:[counter-reset:step] [&_code]:[counter-increment:step_0]",
+        "[&_code]:[counter-increment:step_0] [&_code]:[counter-reset:step]",
         "[&_code_.line::before]:[content:counter(step)] [&_code_.line::before]:[counter-increment:step]",
-        "[&_code_.line::before]:w-4 [&_code_.line::before]:mr-6 [&_code_.line::before]:inline-block",
+        "[&_code_.line::before]:mr-6 [&_code_.line::before]:inline-block [&_code_.line::before]:w-4",
         "[&_code_.line::before]:text-right [&_code_.line::before]:text-muted-foreground/60",
       )}
     >
@@ -35,14 +36,18 @@ export async function CodeBlock({
         variant="xs"
         className={cn(
           "absolute top-2 right-2 font-bold text-muted-foreground/70",
-          "opacity-60 group-hover/code-block:opacity-100",
+          "opacity-70 group-hover/code-block:opacity-0",
           "transition-opacity duration-150 ease-in-out",
         )}
       >
         {lang}
       </Text>
+
+      <CodeBlockCopyButton code={children} />
+
       <div
-        className="rounded-md p-2 border border-border border-solid overflow-auto"
+        className="overflow-auto rounded-xl border border-border border-solid p-2"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: necessary for code highlighting
         dangerouslySetInnerHTML={{ __html: html }}
       />
     </div>

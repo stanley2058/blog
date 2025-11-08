@@ -4,19 +4,19 @@ import {
   LucideIdCard,
   LucideLanguages,
 } from "lucide-react";
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { CommandInline } from "./CommandInline";
 
 export function WhoAmICard({ headless }: { headless?: boolean }) {
   return (
     <section className="flex flex-col gap-1">
       {!headless && <CommandInline>whoami</CommandInline>}
-      <div className="border border-solid border-border px-4 py-2 rounded-md whitespace-pre-wrap">
-        <TextRow icon={<LucideIdCard className="size-4 inline" />}>
+      <div className="whitespace-pre-wrap rounded-md border border-border border-solid px-4 py-2">
+        <TextRow icon={<LucideIdCard className="inline size-4" />}>
           <span className="font-semibold">Stanley Wang (Yu-Te Wang)</span>
         </TextRow>
         <br />
-        <TextRow icon={<LucideBuilding2 className="size-4 inline" />}>
+        <TextRow icon={<LucideBuilding2 className="inline size-4" />}>
           Full-stack developer{" "}
           <a
             className="text-primary hocus:underline"
@@ -28,7 +28,7 @@ export function WhoAmICard({ headless }: { headless?: boolean }) {
           </a>
         </TextRow>
         <br />
-        <TextRow icon={<LucideGraduationCap className="size-4 inline" />}>
+        <TextRow icon={<LucideGraduationCap className="inline size-4" />}>
           Master of Science in Computer Science and Engineering,{" "}
           <a
             className="text-primary hocus:underline"
@@ -40,7 +40,7 @@ export function WhoAmICard({ headless }: { headless?: boolean }) {
           </a>
         </TextRow>
         <br />
-        <TextRow icon={<LucideLanguages className="size-4 inline" />}>
+        <TextRow icon={<LucideLanguages className="inline size-4" />}>
           Chinese, English, Japanese
         </TextRow>
         <br />
@@ -71,7 +71,7 @@ function TextRow({ icon, children }: { icon: ReactNode; children: ReactNode }) {
 function GithubIcon() {
   return (
     <svg
-      className="size-4 fill-foreground inline-flex"
+      className="inline-flex size-4 fill-foreground"
       role="img"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"

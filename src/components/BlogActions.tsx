@@ -1,9 +1,7 @@
-"use client";
-
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Circle } from "./Circle";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import { TextLoading } from "./TextLoading";
 
 const actions = [
@@ -38,7 +36,7 @@ export function BlogActions({
   const [selectedAction, setSelectedAction] = useState<ActionType>(
     actions[0].key,
   );
-  const selectedActionEntry = actions.find((a) => a.key === selectedAction)!;
+  const selectedActionEntry = actions.find((a) => a.key === selectedAction);
   const [showLoading, setShowLoading] = useState(loading);
   const router = useRouter();
 
@@ -47,9 +45,11 @@ export function BlogActions({
     return () => clearTimeout(timer);
   }, []);
 
+  if (!selectedActionEntry) return null;
   if (showLoading) return <TextLoading variant="dot-inverse" interval={250} />;
 
   return (
+    // biome-ignore lint/a11y/noStaticElementInteractions: action redirection
     <div
       className="flex flex-col pl-3"
       onKeyDown={(e) => {
@@ -75,7 +75,7 @@ export function BlogActions({
 
       <button
         className={cn(
-          "cursor-pointer w-fit mt-2 text-ctp-yellow hocus:font-semibold",
+          "mt-2 w-fit cursor-pointer hocus:font-semibold text-ctp-yellow",
           "focus:outine-none focus-visible:outline-none",
         )}
         onClick={() => router.push(selectedActionEntry.href)}
@@ -109,7 +109,7 @@ function ActionEntry({
     <button
       ref={btnRef}
       className={cn(
-        "flex flex-row items-center gap-2 cursor-pointer w-fit",
+        "flex w-fit cursor-pointer flex-row items-center gap-2",
         "focus:outine-none focus-visible:outline-none",
         {
           "text-ctp-yellow": active,
