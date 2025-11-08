@@ -19,7 +19,7 @@ export function WhoAmICard({ headless }: { headless?: boolean }) {
         <TextRow icon={<LucideBuilding2 className="inline size-4" />}>
           Full-stack developer{" "}
           <a
-            className="text-primary hocus:underline"
+            className="text-ctp-lavender hocus:underline"
             href="https://hackmd.io"
             target="_blank"
             rel="noreferrer"
@@ -31,7 +31,7 @@ export function WhoAmICard({ headless }: { headless?: boolean }) {
         <TextRow icon={<LucideGraduationCap className="inline size-4" />}>
           Master of Science in Computer Science and Engineering,{" "}
           <a
-            className="text-primary hocus:underline"
+            className="text-ctp-lavender hocus:underline"
             href="https://www.ntou.edu.tw/"
             target="_blank"
             rel="noreferrer"
@@ -46,7 +46,7 @@ export function WhoAmICard({ headless }: { headless?: boolean }) {
         <br />
         <TextRow icon={<GithubIcon />}>
           <a
-            className="text-primary hocus:underline"
+            className="text-ctp-lavender hocus:underline"
             href="https://github.com/stanley2058"
             target="_blank"
             rel="noreferrer"

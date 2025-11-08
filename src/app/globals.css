@@ -91,6 +91,7 @@
   --color-ctp-blue: var(--ctp-blue);
   --color-ctp-lavender: var(--ctp-lavender);
   --color-ctp-bg: var(--ctp-bg);
+  --color-ctp-fg: var(--ctp-fg);
 }
 
 :root {
@@ -167,6 +168,7 @@
   --ctp-blue: oklch(0.558551 0.2245882 262.1411873);
   --ctp-lavender: oklch(0.6641005 0.1747475 273.2126635);
   --ctp-bg: oklch(0.9577602 0.0058501 264.5182848);
+  --ctp-fg: oklch(43.5% 0.043 279.3);
 }
 
 .dark {
@@ -241,6 +243,7 @@
   --ctp-blue: oklch(0.768125 0.1106966 259.6684387);
   --ctp-lavender: oklch(0.8153704 0.0914778 277.39179);
   --ctp-bg: oklch(0.2428651 0.0303797 283.9012839);
+  --ctp-fg: oklch(87.9% 0.043 272.3);
 }
 
 @layer base {
