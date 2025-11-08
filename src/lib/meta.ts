@@ -25,5 +25,5 @@ export async function getAllPostWithMeta() {
       };
     }),
   );
-  return metadata;
+  return metadata.sort((a, b) => b.timestamp - a.timestamp);
 }
