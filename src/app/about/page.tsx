@@ -5,6 +5,7 @@ import { Navbar } from "@/components/Navbar";
 import { Spoiler } from "@/components/Spoiler";
 import { Text } from "@/components/Text";
 import { WhoAmICard } from "@/components/WhoAmICard";
+import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = {
   title: "About me - Stanley's Blog",
@@ -32,30 +33,14 @@ export default function About() {
             Things I use everyday, in no particular order.
           </Text>
           <div className="flex flex-col gap-1 rounded-md border border-border border-solid px-4 py-2">
-            <Text variant="body" className="leading-tight">
-              - Language: TypeScript, JavaScript
-            </Text>
-            <Text variant="body" className="leading-tight">
-              - Frontend: React, Tailwind, shadcn/ui
-            </Text>
-            <Text variant="body" className="leading-tight">
-              - Backend: Express, Fastify
-            </Text>
-            <Text variant="body" className="leading-tight">
-              - Framework: Next.js
-            </Text>
-            <Text variant="body" className="leading-tight">
-              - Database: PostgreSQL, SQLite, Redis
-            </Text>
-            <Text variant="body" className="leading-tight">
-              - Runtime: Node.js, Bun
-            </Text>
-            <Text variant="body" className="leading-tight">
-              - AI: Supermaven, t3.chat
-            </Text>
-            <Text variant="body" className="leading-tight">
-              - Libs: zod, AI-SDK, zustand
-            </Text>
+            <TextRow>- Language: TypeScript, JavaScript</TextRow>
+            <TextRow>- Frontend: React, Tailwind, shadcn/ui</TextRow>
+            <TextRow>- Backend: Express, Fastify</TextRow>
+            <TextRow>- Framework: Next.js</TextRow>
+            <TextRow>- Database: PostgreSQL, SQLite, Redis</TextRow>
+            <TextRow>- Runtime: Node.js, Bun</TextRow>
+            <TextRow>- AI: Supermaven, t3.chat</TextRow>
+            <TextRow>- Libs: zod, AI-SDK, zustand</TextRow>
           </div>
         </div>
 
@@ -65,21 +50,17 @@ export default function About() {
             <Text variant="lg" className="font-semibold text-ctp-yellow">
               HackMD
             </Text>
-            <Text variant="body">- Title: Full-stack developer</Text>
-            <Text variant="body">- Time: 2023/4 - Now</Text>
-            <Text variant="body">- Works:</Text>
-            <Text variant="body" className="pl-[2ch]">
+            <TextRow>- Title: Full-stack developer</TextRow>
+            <TextRow>- Time: 2023/4 - Now</TextRow>
+            <TextRow>- Works:</TextRow>
+            <TextRow className="pl-[2ch]">
               - Folder system (distributed CRDT-based sync engine)
-            </Text>
-            <Text variant="body" className="pl-[2ch]">
-              - Neo UI overhaul
-            </Text>
-            <Text variant="body" className="pl-[2ch]">
-              - New commenting experience
-            </Text>
-            <Text variant="body" className="pl-[2ch]">
+            </TextRow>
+            <TextRow className="pl-[2ch]">- Neo UI overhaul</TextRow>
+            <TextRow className="pl-[2ch]">- New commenting experience</TextRow>
+            <TextRow className="pl-[2ch]">
               - Legacy tooling and dependency migrations
-            </Text>
+            </TextRow>
           </div>
 
           <Spoiler title="Student works">
@@ -87,16 +68,16 @@ export default function About() {
               <Text variant="lg" className="font-semibold text-ctp-yellow">
                 National Taiwan Ocean University
               </Text>
-              <Text variant="body">- Title: Grad student</Text>
-              <Text variant="body">- Time: 2020/9 - 2022/8</Text>
-              <Text variant="body">
+              <TextRow>- Title: Grad student</TextRow>
+              <TextRow>- Time: 2020/9 - 2022/8</TextRow>
+              <TextRow>
                 - Department: Department of Computer Science and Engineering
-              </Text>
-              <Text variant="body">
+              </TextRow>
+              <TextRow>
                 - Lab: Service-Oriented Software Engineering Lab
-              </Text>
-              <Text variant="body">- Works:</Text>
-              <Text variant="body" className="pl-[2ch]">
+              </TextRow>
+              <TextRow>- Works:</TextRow>
+              <TextRow className="pl-[2ch]">
                 - KMamiz
                 <br />
                 <Text variant="sm" className="inline-flex pl-[2ch]">
@@ -128,8 +109,8 @@ export default function About() {
                     Published in APSEC 2022 (ERA)
                   </a>
                 </Text>
-              </Text>
-              <Text variant="body" className="pl-[2ch]">
+              </TextRow>
+              <TextRow className="pl-[2ch]">
                 - PDAS
                 <br />
                 <Text variant="sm" className="inline-flex pl-[2ch]">
@@ -149,11 +130,25 @@ export default function About() {
                     IEEE Xplore
                   </a>
                 </Text>
-              </Text>
+              </TextRow>
             </div>
           </Spoiler>
         </div>
       </div>
     </Main>
+  );
+}
+
+function TextRow({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <Text variant="body" className={cn("leading-tight", className)}>
+      {children}
+    </Text>
   );
 }
