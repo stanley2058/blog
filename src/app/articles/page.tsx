@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { Img } from "@/components/Img";
 import { Text } from "@/components/Text";
 import { getAllPostWithMeta, type Meta } from "@/lib/meta";
 import { cn } from "@/lib/utils";
+
+export const metadata: Metadata = {
+  title: "Articles - Stanley's Blog",
+  description: "All the articles I wrote.",
+};
 
 export default async function Articles() {
   const metadata = await getAllPostWithMeta();

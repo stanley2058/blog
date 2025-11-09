@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { CodeBlock } from "@/components/CodeBlock";
 import { CommandInline } from "@/components/CommandInline";
 import { Main } from "@/components/Main";
@@ -8,10 +9,15 @@ import { Text } from "@/components/Text";
 import { TextLoading } from "@/components/TextLoading";
 import { TypingCommandInline } from "@/components/TypingCommandInline";
 
+export const metadata: Metadata = {
+  title: "Design system - Stanley's Blog",
+  description: "The design system of my personal blog.",
+};
+
 export default function DesignSystem() {
   return (
     <Main>
-      <Navbar />
+      <Navbar className="sticky top-2.5" />
 
       <Text variant="h1"># H1 title</Text>
       <Text variant="h2">## H2 title</Text>
