@@ -297,26 +297,25 @@
 
   html {
     &::after {
-      @apply fixed top-0 left-0 h-[100dvh] w-[100dvw] content-[''] z-[-1] bg-background/95;
+      @apply fixed top-0 left-0 h-[100dvh] w-[100dvw] content-[''] z-[-1] bg-background/90;
     }
     &::before {
-      image-rendering: pixelated;
+      filter: brightness(180%) saturate(90%);
       @apply fixed top-0 left-0 h-[100dvh] w-[100dvw] content-[''] z-[-2];
-      filter: brightness(280%) saturate(90%);
       background:
-        radial-gradient(49% 81% at 45% 47%, #ffceea69 0%, #073aff00 100%),
-        radial-gradient(113% 91% at 17% -2%, #ff0000ff 1%, #ff00af47 99%),
-        radial-gradient(142% 91% at 83% 7%, #6200ffff 1%, #ff000000 100%),
+        radial-gradient(49% 81% at 45% 47%, #ffceea45 0%, #073aff00 100%),
+        radial-gradient(113% 91% at 17% -2%, #ff2525c4 1%, #bc00ff4d 99%),
+        radial-gradient(142% 91% at 5% 14%, #ff37a4ff 1%, #ff000000 100%),
         radial-gradient(142% 91% at -6% 74%, #ff0049ff 1%, #ff000000 99%),
-        radial-gradient(142% 91% at 111% 84%, #fff100ff 0%, #b400ffff 100%);
+        radial-gradient(142% 91% at 111% 84%, #ff3e00ff 0%, #b400ffff 100%);
     }
 
     &.dark {
       &::after {
-        @apply bg-background/90;
+        @apply bg-background/90 mix-blend-hard-light;
       }
       &::before {
-        filter: brightness(80%) saturate(80%);
+        filter: none;
       }
     }
   }
