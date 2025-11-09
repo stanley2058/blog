@@ -100,7 +100,7 @@ export function TableOfContent() {
                       "text-accent-foreground": current === id,
                     })}
                   >
-                    {display.repeat(2)}
+                    {display}
                   </Text>
                 </Button>
               </a>
