@@ -1,5 +1,4 @@
 import type { MDXComponents } from "mdx/types";
-import Image from "next/image";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
 import { Img } from "./components/Img";
@@ -129,6 +128,12 @@ const components: MDXComponents = {
     />
   ),
   img: (props) => <Img {...props} />,
+  blockquote: (props) => (
+    <blockquote
+      className="border-border border-l-3 border-solid pl-3 text-muted-foreground text-sm"
+      {...props}
+    />
+  ),
 };
 
 export function useMDXComponents(): MDXComponents {
