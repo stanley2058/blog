@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={berkeleyMono.variable} suppressHydrationWarning>
-      <body className="font-mono antialiased">
+      <body className="relative font-mono antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>
