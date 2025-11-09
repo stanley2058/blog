@@ -297,33 +297,26 @@
 
   html {
     &::after {
-      @apply fixed top-0 left-0 h-[100dvh] w-[100dvw] content-[''] z-[-1] bg-background/80;
+      @apply fixed top-0 left-0 h-[100dvh] w-[100dvw] content-[''] z-[-1] bg-background/95;
     }
     &::before {
+      image-rendering: pixelated;
       @apply fixed top-0 left-0 h-[100dvh] w-[100dvw] content-[''] z-[-2];
-      filter: contrast(250%) brightness(200%);
+      filter: brightness(280%) saturate(90%);
       background:
-        radial-gradient(
-          circle at -40% -50%,
-          rgba(169, 169, 255, 0.6),
-          rgba(255, 19, 148, 0.4)
-        ),
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='6.15' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        radial-gradient(49% 81% at 45% 47%, #ffceea69 0%, #073aff00 100%),
+        radial-gradient(113% 91% at 17% -2%, #ff0000ff 1%, #ff00af47 99%),
+        radial-gradient(142% 91% at 83% 7%, #6200ffff 1%, #ff000000 100%),
+        radial-gradient(142% 91% at -6% 74%, #ff0049ff 1%, #ff000000 99%),
+        radial-gradient(142% 91% at 111% 84%, #fff100ff 0%, #b400ffff 100%);
     }
 
     &.dark {
       &::after {
-        @apply bg-background/60;
+        @apply bg-background/90;
       }
       &::before {
-        filter: contrast(200%) brightness(250%);
-        background:
-          radial-gradient(
-            circle at -40% -50%,
-            rgba(3, 7, 18, 0.8),
-            rgba(8, 17, 47, 0.6)
-          ),
-          url("data:image/svg+xml,%3Csvg viewBox='0 0 300 300' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='6.15' numOctaves='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        filter: brightness(80%) saturate(80%);
       }
     }
   }
