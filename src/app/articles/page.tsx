@@ -21,8 +21,8 @@ function Post({ meta }: { meta: Meta & { slug: string } }) {
     <Link
       href={`/articles/${meta.slug}`}
       className={cn(
-        "grid grid-cols-[minmax(0,1fr)_auto] gap-2",
-        "rounded-xl border border-border border-solid p-4",
+        "grid grid-cols-[minmax(0,1fr)_auto] gap-2 bg-background shadow-sm",
+        "rounded-lg border border-border border-solid p-4",
         "hocus:bg-accent hocus:text-accent-foreground",
       )}
     >

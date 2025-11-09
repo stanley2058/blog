@@ -14,8 +14,8 @@ export function TerminalWindow({
   return (
     <div
       className={cn(
-        "flex flex-col overflow-hidden rounded-md",
-        "border border-border border-solid",
+        "flex flex-col overflow-hidden rounded-lg",
+        "border border-border border-solid shadow-sm",
         containerClassName,
       )}
     >

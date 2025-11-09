@@ -48,7 +48,7 @@ export async function CodeBlock({
       <CodeBlockCopyButton code={children} />
 
       <div
-        className="overflow-auto rounded-xl border border-border border-solid bg-ctp-bg p-2"
+        className="overflow-auto rounded-lg border border-border border-solid bg-ctp-bg p-2"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: necessary for code highlighting
         dangerouslySetInnerHTML={{ __html: html }}
       />

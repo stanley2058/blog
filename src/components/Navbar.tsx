@@ -35,7 +35,7 @@ export function Navbar({ className }: { className?: string }) {
     <nav
       className={cn(
         "z-10 flex flex-row gap-4 bg-background/75 py-1 pr-2 pl-5 sm:gap-6",
-        "rounded-xl border border-border border-solid backdrop-blur-lg",
+        "rounded-lg border border-border border-solid shadow-sm backdrop-blur-lg",
         className,
       )}
     >
