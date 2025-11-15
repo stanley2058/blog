@@ -1,0 +1,104 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  width="80"
+  height="80"
+  viewBox="0 0 80 80"
+>
+  <defs>
+    <radialGradient
+      id="bgGradient"
+      cx="50%"
+      cy="50%"
+      r="50%"
+      fx="50%"
+      fy="50%"
+    >
+      <!-- rgba(235, 47, 181, 0.15) -->
+      <stop
+        offset="36%"
+        stop-color="#eb2fb5"
+        stop-opacity="0.15"
+      />
+      <!-- rgba(235, 47, 181, 0.6) -->
+      <stop
+        offset="100%"
+        stop-color="#eb2fb5"
+        stop-opacity="0.6"
+      />
+    </radialGradient>
+  </defs>
+
+  <!-- Base circular background (#020618) -->
+  <rect
+    x="0"
+    y="0"
+    width="80"
+    height="80"
+    rx="40"
+    ry="40"
+    fill="#020618"
+  />
+  <!-- Radial gradient overlay -->
+  <rect
+    x="0"
+    y="0"
+    width="80"
+    height="80"
+    rx="40"
+    ry="40"
+    fill="url(#bgGradient)"
+  />
+
+  <!-- Bars: width=43.2 (54%), height=10.4 (13%), radius=4, skewX(12deg) around center -->
+
+  <!-- Bar 1: top=19% (15.2px), left computed from left-1/2 + translateX(-44%) -->
+  <!-- x=20.992, y=15.2, cx=42.592, cy=20.4 -->
+  <rect
+    x="20.992"
+    y="15.2"
+    width="43.2"
+    height="10.4"
+    rx="4"
+    ry="4"
+    fill="#e9d5ff"
+    transform="
+      translate(42.592 20.4)
+      skewX(12)
+      translate(-42.592 -20.4)
+    "
+  />
+
+  <!-- Bar 2: top=41% (32.8px), translateX(-68%) -->
+  <!-- x=10.624, y=32.8, cx=32.224, cy=38.0 -->
+  <rect
+    x="10.624"
+    y="32.8"
+    width="43.2"
+    height="10.4"
+    rx="4"
+    ry="4"
+    fill="#e9d5ff"
+    transform="
+      translate(32.224 38)
+      skewX(12)
+      translate(-32.224 -38)
+    "
+  />
+
+  <!-- Bar 3: top=64% (51.2px), translateX(-48%) -->
+  <!-- x=19.264, y=51.2, cx=40.864, cy=56.4 -->
+  <rect
+    x="19.264"
+    y="51.2"
+    width="43.2"
+    height="10.4"
+    rx="4"
+    ry="4"
+    fill="#e9d5ff"
+    transform="
+      translate(40.864 56.4)
+      skewX(12)
+      translate(-40.864 -56.4)
+    "
+  />
+</svg>
