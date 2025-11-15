@@ -3,6 +3,7 @@ import {
   LucideGraduationCap,
   LucideIdCard,
   LucideLanguages,
+  LucideMapPin,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { CommandInline } from "./CommandInline";
@@ -34,18 +35,29 @@ export function WhoAmICard({
           </a>
         </TextRow>
         <br />
-        <TextRow icon={<LucideGraduationCap className="inline size-4" />}>
-          Master of Science in Computer Science and Engineering,{" "}
-          <a
-            className="text-ctp-lavender hocus:underline"
-            href="https://www.ntou.edu.tw/"
-            target="_blank"
-            rel="noreferrer"
-          >
-            NTOU
-          </a>
+
+        {full && (
+          <>
+            <TextRow icon={<LucideGraduationCap className="inline size-4" />}>
+              Master of Science in Computer Science and Engineering,{" "}
+              <a
+                className="text-ctp-lavender hocus:underline"
+                href="https://www.ntou.edu.tw/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                NTOU
+              </a>
+            </TextRow>
+            <br />
+          </>
+        )}
+
+        <TextRow icon={<LucideMapPin className="inline size-4" />}>
+          Taipei, Taiwan (UTC+8)
         </TextRow>
         <br />
+
         {full && (
           <TextRow icon={<LucideLanguages className="inline size-4" />}>
             中文, English, 日本語 (ordered by proficiency)
@@ -56,6 +68,18 @@ export function WhoAmICard({
             Chinese, English, Japanese
           </TextRow>
         )}
+        <br />
+
+        <TextRow icon={<XIcon />}>
+          <a
+            className="text-ctp-lavender hocus:underline"
+            href="https://x.com/stanley2058"
+            target="_blank"
+            rel="noreferrer"
+          >
+            @stanley2058
+          </a>
+        </TextRow>
         <br />
         <TextRow icon={<GithubIcon />}>
           <a
@@ -68,22 +92,6 @@ export function WhoAmICard({
           </a>
         </TextRow>
         <br />
-
-        {full && (
-          <>
-            <TextRow icon={<XIcon />}>
-              <a
-                className="text-ctp-lavender hocus:underline"
-                href="https://x.com/stanley2058"
-                target="_blank"
-                rel="noreferrer"
-              >
-                @stanley2058
-              </a>
-            </TextRow>
-            <br />
-          </>
-        )}
       </div>
     </section>
   );
