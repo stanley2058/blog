@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { CodeBlock } from "@/components/CodeBlock";
 import { CommandInline } from "@/components/CommandInline";
+import { DramFooter } from "@/components/DramFooter";
 import { Main } from "@/components/Main";
 import { Navbar } from "@/components/Navbar";
 import { Terminal } from "@/components/Terminal";
@@ -109,6 +110,10 @@ export default function DesignSystem() {
       <Uptime />
 
       <Terminal />
+
+      <div className="relative">
+        <DramFooter />
+      </div>
     </Main>
   );
 }
