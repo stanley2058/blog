@@ -1,0 +1,10 @@
+title: Building An AI Discord Chatbot? - With Tools
+tags: [ChatBot, LLM, AI, Discord]
+timestamp: 1759241220000
+image: https://hackmd.io/_uploads/BJgaWvYnxl.png
+description: |
+  Tools are what bridge LLMs and other non-text entities.
+
+  For example, the model itself cannot extract the content of a link, so how does the model obtain the content of the link you pasted in ChatGPT? Actually, the model is calling a tool behind the scenes, which fetches the content and adds it to the context.
+
+  After this, the model can generate a response based on the correct context!

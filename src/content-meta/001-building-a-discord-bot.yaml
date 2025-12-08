@@ -1,0 +1,14 @@
+title: Building An AI Discord Chatbot?
+tags: [ChatBot, LLM, AI, Discord]
+timestamp: 1759241100000
+image: https://hackmd.io/_uploads/BkIqZN_nel.png
+description: |
+  Who's building a Discord chatbot in 2025?
+
+  Precisely because it's 2025! Look at what we've got:
+
+  * Large language models
+  * Convenient and mature Web techs
+  * A lot of tooling around LLMs (tool calls, MCPs)
+
+  You are just one frontend away from building your own chatbot! However, supporting streaming server-sent events without everything exploding and maintaining accessibility anywhere is quite a frontend challenge. What if I tell you, there is a way, without writing a single line of frontend code, you can get a perfect chat interface with cross-platform and mobile support? Yes! It's Discord!

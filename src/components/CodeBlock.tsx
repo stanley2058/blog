@@ -27,6 +27,7 @@ export async function CodeBlock({
     <div
       className={cn(
         "group/code-block relative",
+        "[&_pre]:w-fit",
         "[&_code]:font-mono [&_code]:text-base",
         "[&_code]:[counter-increment:step_0] [&_code]:[counter-reset:step]",
         "[&_code_.line::before]:[content:counter(step)] [&_code_.line::before]:[counter-increment:step]",

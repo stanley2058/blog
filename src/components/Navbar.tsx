@@ -120,7 +120,9 @@ function NavLink({
   hideOnMobile?: boolean;
 }) {
   const pathname = usePathname();
-  const active = pathname === href;
+  const active =
+    pathname === href ||
+    (href === "/articles" && pathname.startsWith("/articles/"));
 
   return (
     <Link

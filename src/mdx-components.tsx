@@ -1,6 +1,8 @@
 import type { MDXComponents } from "mdx/types";
 import Link from "next/link";
 import type { ComponentProps, ReactNode } from "react";
+import type { BundledLanguage } from "shiki";
+import { CodeBlock } from "./components/CodeBlock";
 import { Img } from "./components/Img";
 import { Text } from "./components/Text";
 import {
@@ -113,7 +115,7 @@ const components: MDXComponents = {
     );
   },
   ul: (props) => <ul className="ml-4 list-disc" {...props} />,
-  ol: (props) => <ol className="ml-7.5 list-decimal" {...props} />,
+  ol: (props) => <ol className="ml-7.5 list-decimal [&_p]:m-0" {...props} />,
   li: (props) => <li className="my-2" {...props} />,
   table: (props) => <Table {...props} />,
   thead: (props) => <TableHeader {...props} />,
@@ -134,6 +136,19 @@ const components: MDXComponents = {
       {...props}
     />
   ),
+  pre: (props) => {
+    const { children } = props as {
+      children: { props: { children: string; className: string } };
+    };
+    const lang = children.props.className?.replace("language-", "");
+
+    if (!lang) return <pre {...props} className="max-w-full overflow-auto" />;
+    return (
+      <CodeBlock lang={lang as BundledLanguage}>
+        {children.props.children}
+      </CodeBlock>
+    );
+  },
 };
 
 export function useMDXComponents(): MDXComponents {
