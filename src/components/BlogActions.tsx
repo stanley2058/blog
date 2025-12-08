@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { Circle } from "./Circle";
+import { Text } from "./Text";
 import { TextLoading } from "./TextLoading";
 
 const actions = [
@@ -74,6 +75,10 @@ export function BlogActions({
           {action.title}
         </ActionEntry>
       ))}
+
+      <Text className="mt-1 mb-0.5 text-ctp-pink/80">
+        [J/K/↑/↓] Navigate [Enter] Select
+      </Text>
 
       <button
         className={cn(
