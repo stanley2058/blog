@@ -23,7 +23,7 @@ export default function Home() {
         <div className="my-12 flex flex-col gap-4 text-center">
           <Text variant="h1">Oh hi!</Text>
           <Text>
-            I am Stanley, welcome to my blog.
+            I am <b>Stanley</b>, welcome to my blog.
             <br />I build software and sometimes writes down my journey doing
             so.
           </Text>
