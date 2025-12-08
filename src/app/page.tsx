@@ -25,7 +25,7 @@ export default function Home() {
         </Text>
       </div>
 
-      <TerminalWindow containerClassName="h-100" className="p-2">
+      <TerminalWindow containerClassName="min-h-100" className="p-2">
         <div className="flex flex-col gap-3">
           <WhoAmICard />
 

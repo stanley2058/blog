@@ -2,6 +2,7 @@
 
 import { useMediaQuery } from "@react-hookz/web";
 import {
+  LucideMenu,
   LucideMonitor,
   LucideMoon,
   LucidePaintBucket,
@@ -34,17 +35,23 @@ export function Navbar({ className }: { className?: string }) {
   return (
     <nav
       className={cn(
-        "z-10 flex flex-row gap-4 bg-background/75 py-1 pr-2 pl-5 sm:gap-6",
+        "z-10 flex flex-row gap-2 bg-background/75 px-1 py-1 md:gap-6 md:pr-2 md:pl-5",
         "rounded-lg border border-border border-solid shadow-sm backdrop-blur-lg",
         className,
       )}
     >
-      <NavLink href="/">Home</NavLink>
-      <NavLink href="/articles">Blog</NavLink>
-      <NavLink className="hidden sm:flex" href="/about">
+      <MobileNavMenu />
+
+      <NavLink hideOnMobile href="/">
+        Home
+      </NavLink>
+      <NavLink hideOnMobile href="/articles">
+        Blog
+      </NavLink>
+      <NavLink hideOnMobile href="/about">
         About
       </NavLink>
-      <NavLink className="hidden md:flex" href="/design-system">
+      <NavLink hideOnMobile href="/design-system">
         Design
       </NavLink>
 
@@ -105,23 +112,53 @@ function NavLink({
   href,
   className,
   children,
+  hideOnMobile,
 }: {
   href: string;
   className?: string;
   children: React.ReactNode;
+  hideOnMobile?: boolean;
 }) {
   const pathname = usePathname();
   const active = pathname === href;
+
   return (
     <Link
       href={href}
       className={cn(
         "flex flex-row items-center justify-center gap-1.5",
+        { "hidden md:flex": hideOnMobile && !active },
         className,
       )}
     >
       <Circle active={active} />
       {children}
     </Link>
+  );
+}
+
+function MobileNavMenu() {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <Button variant="ghost" size="icon" className="md:hidden">
+          <LucideMenu />
+        </Button>
+      </PopoverTrigger>
+
+      <PopoverContent
+        side="right"
+        sideOffset={4}
+        align="start"
+        className="flex w-fit flex-row gap-2 p-1"
+      >
+        <NavLink href="/">Home</NavLink>
+        <NavLink href="/articles">Blog</NavLink>
+        <NavLink href="/about">About</NavLink>
+        <NavLink href="/design-system">Design</NavLink>
+      </PopoverContent>
+    </Popover>
   );
 }
