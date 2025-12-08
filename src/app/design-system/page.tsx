@@ -35,6 +35,10 @@ export default function DesignSystem() {
 
       <hr className="mt-2" />
 
+      <Uptime />
+
+      <Terminal autoFocus={false} />
+
       <Text variant="h1"># H1 title</Text>
       <Text variant="h2">## H2 title</Text>
       <Text variant="h3">### H3 title</Text>
@@ -121,10 +125,6 @@ export default function DesignSystem() {
           "</Text>",
         ].join("\n")}
       </CodeBlock>
-
-      <Uptime />
-
-      <Terminal />
 
       <div className="relative">
         <DramFooter />

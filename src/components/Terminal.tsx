@@ -120,7 +120,7 @@ const terminalState = createStore<TerminalState>((set) => ({
   clearCommandEntries: () => set({ commandEntries: [] }),
 }));
 
-export function Terminal() {
+export function Terminal({ autoFocus = true }: { autoFocus?: boolean }) {
   const [blockedBy, setBlockedBy] = useState<Promise<void> | null>(null);
   const commandEntries = useStore(terminalState, (s) => s.commandEntries);
 
@@ -160,6 +160,7 @@ export function Terminal() {
           });
         }}
         onClearScreen={() => terminalState.getState().clearCommandEntries()}
+        scrollIntoView={autoFocus}
       />
     </div>
   );
@@ -169,10 +170,12 @@ function ShellInput({
   blocked,
   onSubmit,
   onClearScreen,
+  scrollIntoView,
 }: {
   blocked?: boolean;
   onSubmit?: (fullCommand: string) => void;
   onClearScreen?: () => void;
+  scrollIntoView?: boolean;
 }) {
   const historyIndexRef = useRef(0);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -231,7 +234,7 @@ function ShellInput({
             addHistory(inputText);
             onSubmit?.(inputText);
             setInputText("");
-            containerRef.current?.scrollIntoView();
+            if (scrollIntoView) containerRef.current?.scrollIntoView();
             return;
           }
           if (e.ctrlKey && e.key === "l") {
@@ -257,7 +260,7 @@ function ShellInput({
             const prev = history[historyIndexRef.current];
             if (!prev) return;
             setInputText(prev);
-            containerRef.current?.scrollIntoView();
+            if (scrollIntoView) containerRef.current?.scrollIntoView();
             return;
           }
           if (e.key === "ArrowDown") {
@@ -265,7 +268,7 @@ function ShellInput({
             const history = terminalState.getState().history;
             if (historyIndexRef.current === history.length - 1) {
               setInputText("");
-              containerRef.current?.scrollIntoView();
+              if (scrollIntoView) containerRef.current?.scrollIntoView();
               historyIndexRef.current = -1;
               return;
             } else {
@@ -277,12 +280,12 @@ function ShellInput({
             const next = history[historyIndexRef.current];
             if (!next) return;
             setInputText(next);
-            containerRef.current?.scrollIntoView();
+            if (scrollIntoView) containerRef.current?.scrollIntoView();
             return;
           }
           if (e.ctrlKey && e.key === "c") {
             setInputText("");
-            containerRef.current?.scrollIntoView();
+            if (scrollIntoView) containerRef.current?.scrollIntoView();
             return;
           }
           if (e.key === "Tab") {
