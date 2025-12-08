@@ -297,11 +297,24 @@
 
   html {
     &::after {
-      @apply fixed top-0 left-0 h-[100dvh] w-[100dvw] content-[''] z-[-1] bg-background/90;
+      @apply fixed top-0 left-0 h-dvh w-dvw content-[''] z-[-1] bg-background/90;
+
+      background-image:
+        linear-gradient(
+          color-mix(in oklab, var(--foreground) 3%, transparent) 2px,
+          transparent 2px
+        ),
+        linear-gradient(
+          90deg,
+          color-mix(in oklab, var(--foreground) 3%, transparent) 2px,
+          transparent 2px
+        );
+      background-size: 72px 72px;
+      background-position: center;
     }
     &::before {
       filter: brightness(180%) saturate(90%);
-      @apply fixed top-0 left-0 h-[100dvh] w-[100dvw] content-[''] z-[-2];
+      @apply fixed top-0 left-0 h-dvh w-dvw content-[''] z-[-2];
       background:
         radial-gradient(49% 81% at 45% 47%, #ffceea45 0%, #073aff00 100%),
         radial-gradient(113% 91% at 17% -2%, #ff2525c4 1%, #bc00ff4d 99%),
