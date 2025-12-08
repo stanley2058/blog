@@ -20,6 +20,21 @@ export default function DesignSystem() {
     <Main>
       <Navbar className="sticky top-2.5" />
 
+      <Text>
+        If you like this base theme, you can download it from{" "}
+        <a
+          href="https://tweakcn.com/themes/cmhnece4p000c04l85sxb2rvn"
+          className="hocus:text-ctp-blue text-ctp-lavender"
+          target="_blank"
+          rel="noreferrer noopener"
+        >
+          tweakcn
+        </a>
+        .
+      </Text>
+
+      <hr className="mt-2" />
+
       <Text variant="h1"># H1 title</Text>
       <Text variant="h2">## H2 title</Text>
       <Text variant="h3">### H3 title</Text>
