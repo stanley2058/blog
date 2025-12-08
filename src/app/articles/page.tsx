@@ -27,15 +27,29 @@ function Post({ meta }: { meta: Meta & { slug: string } }) {
     <Link
       href={`/articles/${meta.slug}`}
       className={cn(
-        "grid grid-cols-[minmax(0,1fr)_auto] gap-2 bg-background shadow-sm",
+        "bg-background shadow-sm",
         "rounded-lg border border-border border-solid p-4",
         "hocus:bg-accent hocus:text-accent-foreground",
       )}
     >
-      <div className="flex flex-col gap-1">
+      <div className="block space-y-2">
+        {meta.image && (
+          <Img
+            src={meta.image}
+            alt={meta.title}
+            className={cn(
+              "mb-3 w-full rounded-md object-cover",
+              "md:float-right md:mb-2 md:ml-4 md:w-48",
+            )}
+            width="auto"
+            height="200px"
+          />
+        )}
+
         <Text variant="h3" className="m-0">
           {meta.title}
         </Text>
+
         <Text variant="sm" className="font-medium text-muted-foreground italic">
           {new Date(meta.timestamp).toLocaleString()}
         </Text>
@@ -56,14 +70,12 @@ function Post({ meta }: { meta: Meta & { slug: string } }) {
           </Text>
         )}
 
-        <Text variant="body" className="mt-3">
+        <Text variant="body" className="mt-3 whitespace-pre-wrap">
           {meta.description}
         </Text>
-      </div>
 
-      {meta.image && (
-        <Img src={meta.image} alt={meta.title} width="auto" height="200px" />
-      )}
+        <div className="clear-both" />
+      </div>
     </Link>
   );
 }
