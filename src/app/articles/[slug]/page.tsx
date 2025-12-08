@@ -1,6 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { TableOfContent } from "@/components/TableOfContent";
 import { getAllPostWithMeta } from "@/lib/meta";
 
@@ -9,15 +10,19 @@ export default async function Page({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const { default: Post } = await import(`@/content/${slug}.mdx`);
+  try {
+    const { slug } = await params;
+    const { default: Post } = await import(`@/content/${slug}.mdx`);
 
-  return (
-    <article className="relative [&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-18">
-      <TableOfContent />
-      <Post />
-    </article>
-  );
+    return (
+      <article className="relative [&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-18">
+        <TableOfContent />
+        <Post />
+      </article>
+    );
+  } catch {
+    return notFound();
+  }
 }
 
 export async function generateStaticParams() {
