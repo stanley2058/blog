@@ -27,3 +27,14 @@ export async function getAllPostWithMeta() {
   );
   return metadata.sort((a, b) => b.timestamp - a.timestamp);
 }
+
+export async function getPostMdxSource(slug: string) {
+  "use cache";
+  const filePath = path.join(process.cwd(), "src/content/", `${slug}.mdx`);
+  try {
+    const content = await fs.readFile(filePath, "utf8");
+    return content;
+  } catch {
+    return null;
+  }
+}
