@@ -8,6 +8,7 @@ export interface Meta {
   timestamp: number;
   description: string;
   image?: string;
+  modifiedTimestamp?: number;
 }
 
 export async function getAllPostWithMeta() {
@@ -26,6 +27,21 @@ export async function getAllPostWithMeta() {
     }),
   );
   return metadata.sort((a, b) => b.timestamp - a.timestamp);
+}
+
+export async function getPostMeta(slug: string) {
+  "use cache";
+  const filePath = path.join(
+    process.cwd(),
+    "src/content-meta/",
+    `${slug}.yaml`,
+  );
+  try {
+    const content = await fs.readFile(filePath, "utf8");
+    return parse(content) as Meta;
+  } catch {
+    return null;
+  }
 }
 
 export async function getPostMdxSource(slug: string) {

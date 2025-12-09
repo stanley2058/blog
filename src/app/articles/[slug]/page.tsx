@@ -1,9 +1,11 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
+import Head from "next/head";
 import { notFound } from "next/navigation";
 import { TableOfContent } from "@/components/TableOfContent";
-import { getAllPostWithMeta } from "@/lib/meta";
+import { Text } from "@/components/Text";
+import { getAllPostWithMeta, getPostMeta } from "@/lib/meta";
 
 export default async function Page({
   params,
@@ -16,6 +18,7 @@ export default async function Page({
 
     return (
       <article className="relative [&_:is(h1,h2,h3,h4,h5,h6)]:scroll-mt-18">
+        <PostMetadata slug={slug} />
         <TableOfContent />
         <Post />
       </article>
@@ -90,4 +93,87 @@ export async function generateMetadata({
     };
   }
   return meta;
+}
+
+async function PostMetadata({ slug }: { slug: string }) {
+  const meta = await getPostMeta(slug);
+
+  const jsonLd = meta
+    ? {
+        "@context": "https://schema.org",
+        "@type": "BlogPosting",
+        mainEntityOfPage: {
+          "@type": "WebPage",
+          "@id": `https://blog.stw.tw/articles/${slug}`,
+        },
+        headline: meta.title,
+        description: meta.description,
+        datePublished: new Date(meta.timestamp).toISOString(),
+        dateModified: new Date(
+          meta.modifiedTimestamp ?? meta.timestamp,
+        ).toISOString(),
+        author: {
+          "@type": "Person",
+          name: "Stanley Wang",
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Stanley's Blog",
+          logo: {
+            "@type": "ImageObject",
+            url: "https://blog.stw.tw/icon0.svg",
+          },
+        },
+        ...(meta.image && {
+          image: meta.image,
+        }),
+        ...(meta.tags.length > 0 && {
+          keywords: meta.tags.join(", "),
+        }),
+      }
+    : null;
+
+  return (
+    <>
+      {jsonLd && (
+        <Head>
+          <script
+            type="application/ld+json"
+            // biome-ignore lint/security/noDangerouslySetInnerHtml: necessary for jsonld
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          />
+        </Head>
+      )}
+
+      {meta?.timestamp && (
+        <Text
+          variant="sm"
+          className="absolute top-0 left-0 flex translate-y-[-120%] flex-row gap-2 text-muted-foreground/60"
+        >
+          <time dateTime={meta.timestamp.toString()}>
+            {formatDate(meta.timestamp)}
+          </time>
+
+          {meta.modifiedTimestamp && (
+            <time dateTime={meta.modifiedTimestamp.toString()}>
+              | Updated at: {formatDate(meta.modifiedTimestamp)}
+            </time>
+          )}
+        </Text>
+      )}
+    </>
+  );
+}
+
+function formatDate(date: number) {
+  return Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour12: false,
+    hour: "numeric",
+    minute: "numeric",
+    timeZone: "Asia/Taipei",
+    timeZoneName: "short",
+  }).format(date);
 }
