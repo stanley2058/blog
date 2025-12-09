@@ -57,7 +57,7 @@ export default function DesignSystem() {
         with a problem: the kingdom was running out of money.
       </Text>
 
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row flex-wrap gap-2">
         <Text variant="body" className="bg-primary text-primary-foreground">
           Primary
         </Text>
@@ -126,8 +126,10 @@ export default function DesignSystem() {
         ].join("\n")}
       </CodeBlock>
 
-      <div className="relative">
-        <DramFooter />
+      <div className="overflow-auto">
+        <div className="relative min-w-120">
+          <DramFooter />
+        </div>
       </div>
     </Main>
   );

@@ -160,6 +160,7 @@ export function Terminal({ autoFocus = true }: { autoFocus?: boolean }) {
           });
         }}
         onClearScreen={() => terminalState.getState().clearCommandEntries()}
+        autoFocus={autoFocus}
         scrollIntoView={autoFocus}
       />
     </div>
@@ -170,11 +171,13 @@ function ShellInput({
   blocked,
   onSubmit,
   onClearScreen,
+  autoFocus,
   scrollIntoView,
 }: {
   blocked?: boolean;
   onSubmit?: (fullCommand: string) => void;
   onClearScreen?: () => void;
+  autoFocus?: boolean;
   scrollIntoView?: boolean;
 }) {
   const historyIndexRef = useRef(0);
@@ -193,9 +196,9 @@ function ShellInput({
   const addHistory = useStore(terminalState, (s) => s.addHistory);
 
   useEffect(() => {
-    if (blocked) return;
+    if (blocked || !autoFocus) return;
     inputRef.current?.focus();
-  }, [blocked]);
+  }, [blocked, autoFocus]);
 
   if (blocked) return null;
   return (

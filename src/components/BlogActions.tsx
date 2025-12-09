@@ -1,5 +1,6 @@
 "use client";
 
+import { useMediaQuery } from "@react-hookz/web";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
@@ -76,7 +77,7 @@ export function BlogActions({
         </ActionEntry>
       ))}
 
-      <Text className="mt-1 mb-0.5 text-ctp-pink/80">
+      <Text className="mt-1 mb-0.5 hidden text-ctp-pink/80 md:flex">
         [J/K/↑/↓] Navigate [Enter] Select
       </Text>
 
@@ -106,11 +107,12 @@ function ActionEntry({
   onSelectNext: () => void;
   onSelectPrev: () => void;
 }) {
+  const isSmallDevice = useMediaQuery("only screen and (max-width : 768px)");
   const btnRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
-    if (!active) return;
+    if (!active || isSmallDevice) return;
     btnRef.current?.focus();
-  }, [active]);
+  }, [active, isSmallDevice]);
 
   return (
     <button

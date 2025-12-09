@@ -65,6 +65,7 @@ export function Navbar({ className }: { className?: string }) {
               size="icon"
               onClick={() => setShowThemeSwitcher(!showThemeSwitcher)}
               className="relative"
+              aria-label="Change color theme"
             >
               <LucidePaintBucket />
             </Button>
@@ -113,15 +114,18 @@ function NavLink({
   className,
   children,
   hideOnMobile,
+  onClick,
 }: {
   href: string;
   className?: string;
   children: React.ReactNode;
   hideOnMobile?: boolean;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
 }) {
   const pathname = usePathname();
   const active =
     pathname === href ||
+    (href === "/" && pathname === "") ||
     (href === "/articles" && pathname.startsWith("/articles/"));
 
   return (
@@ -132,6 +136,7 @@ function NavLink({
         { "hidden md:flex": hideOnMobile && !active },
         className,
       )}
+      onClick={onClick}
     >
       <Circle active={active} />
       {children}
@@ -154,12 +159,20 @@ function MobileNavMenu() {
         side="right"
         sideOffset={4}
         align="start"
-        className="flex w-fit flex-row gap-2 p-1"
+        className="flex w-fit flex-col items-start gap-2 px-3 py-1"
       >
-        <NavLink href="/">Home</NavLink>
-        <NavLink href="/articles">Blog</NavLink>
-        <NavLink href="/about">About</NavLink>
-        <NavLink href="/design-system">Design</NavLink>
+        <NavLink onClick={() => setOpen(false)} href="/">
+          Home
+        </NavLink>
+        <NavLink onClick={() => setOpen(false)} href="/articles">
+          Blog
+        </NavLink>
+        <NavLink onClick={() => setOpen(false)} href="/about">
+          About
+        </NavLink>
+        <NavLink onClick={() => setOpen(false)} href="/design-system">
+          Design
+        </NavLink>
       </PopoverContent>
     </Popover>
   );
