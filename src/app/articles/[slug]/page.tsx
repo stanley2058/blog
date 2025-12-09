@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
-import Head from "next/head";
 import { notFound } from "next/navigation";
 import { TableOfContent } from "@/components/TableOfContent";
 import { Text } from "@/components/Text";
@@ -136,13 +135,16 @@ async function PostMetadata({ slug }: { slug: string }) {
   return (
     <>
       {jsonLd && (
-        <Head>
-          <script
-            type="application/ld+json"
-            // biome-ignore lint/security/noDangerouslySetInnerHtml: necessary for jsonld
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-          />
-        </Head>
+        <script
+          key="jsonld"
+          type="application/ld+json"
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: necessary for jsonld
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(jsonLd)
+              .replace(/</g, "\\u003c")
+              .replace(/>/g, "\\u003e"),
+          }}
+        />
       )}
 
       {meta?.timestamp && (
