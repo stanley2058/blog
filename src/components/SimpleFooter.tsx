@@ -10,7 +10,7 @@ export function SimpleFooter() {
   }, []);
 
   return (
-    <footer className="-translate-x-1/2 absolute bottom-4 left-1/2 flex flex-row items-center justify-center">
+    <footer className="mt-auto mb-4 flex flex-row items-center justify-center">
       <Text variant="sm" className="text-muted-foreground/60">
         Stanley Wang &copy;{year}
       </Text>
