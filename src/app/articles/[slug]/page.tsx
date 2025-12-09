@@ -60,6 +60,12 @@ export async function generateMetadata({
       title,
       description: post.description,
     },
+    alternates: {
+      canonical: `https://blog.stw.tw/articles/${slug}`,
+      types: {
+        "text/markdown": `https://blog.stw.tw/articles/raw/${slug}`,
+      },
+    },
   };
 
   if (post.image) {
