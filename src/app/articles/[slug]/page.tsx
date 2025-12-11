@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { TableOfContent } from "@/components/TableOfContent";
 import { Text } from "@/components/Text";
 import { getAllPostWithMeta, getPostMeta } from "@/lib/meta";
@@ -11,8 +11,12 @@ export default async function Page({
 }: {
   params: Promise<{ slug: string }>;
 }) {
+  const { slug } = await params;
+  if (slug.endsWith(".md")) {
+    return redirect(`/articles/raw/${slug.replace(".md", "")}`);
+  }
+
   try {
-    const { slug } = await params;
     const { default: Post } = await import(`@/content/${slug}.mdx`);
 
     return (
