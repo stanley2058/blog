@@ -2,6 +2,7 @@ import { Ubuntu_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
+import { BlogCommandStateProvider } from "@/components/BlogCommandStateProvider";
 
 const berkeleyMono = localFont({
   src: "./Berkeley-Mono-Variable.woff2",
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body className="relative font-mono antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           {children}
+          <BlogCommandStateProvider />
         </ThemeProvider>
       </body>
     </html>
