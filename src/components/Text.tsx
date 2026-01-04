@@ -2,9 +2,9 @@ import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 const textVariants = {
-  h1: cn("text-4xl font-extrabold"),
-  h2: cn("text-3xl font-bold"),
-  h3: cn("text-2xl font-bold"),
+  h1: cn("text-5xl font-extrabold font-display-mono"),
+  h2: cn("text-4xl font-bold font-display-mono"),
+  h3: cn("text-3xl font-bold font-display-mono"),
   h4: cn("text-xl font-bold"),
   h5: cn("text-lg font-bold"),
   h6: cn("text-base font-bold"),
