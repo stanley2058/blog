@@ -144,7 +144,10 @@ export function BlogCommands({
               {posts.map((post) => (
                 <CommandItem
                   key={post.slug}
-                  onSelect={() => router.push(`/articles/${post.slug}`)}
+                  onSelect={() => {
+                    router.push(`/articles/${post.slug}`);
+                    setOpen(false);
+                  }}
                 >
                   <LucideArrowRight />
                   <span className="flex flex-col gap-0.5">

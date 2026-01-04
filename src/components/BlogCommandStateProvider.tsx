@@ -9,7 +9,10 @@ export async function BlogCommandStateProvider() {
       posts={posts.map((p) => ({
         slug: p.slug,
         title: p.title,
-        brief: p.description.slice(0, 120),
+        brief:
+          p.description.length > 120
+            ? `${p.description.slice(0, 120)}...`
+            : p.description,
       }))}
     />
   );
