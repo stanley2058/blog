@@ -125,7 +125,7 @@ function NavLink({
   const pathname = usePathname();
   const active =
     pathname === href ||
-    (href === "/" && pathname === "") ||
+    (href === "/" && !pathname) ||
     (href === "/articles" && pathname.startsWith("/articles/"));
 
   return (
