@@ -8,7 +8,8 @@ import {
   LucideIdCardLanyard,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { useEffect, useEffectEvent, useRef } from "react";
+import { createStore, useStore } from "zustand";
 import {
   CommandDialog,
   CommandEmpty,
@@ -22,12 +23,22 @@ import {
 import { Text } from "./Text";
 import { Kbd } from "./ui/kbd";
 
+export const commandStore = createStore(() => ({
+  open: false,
+}));
+
 export function BlogCommands({
   posts,
 }: {
   posts: { slug: string; title: string; brief: string }[];
 }) {
-  const [open, setOpen] = useState(false);
+  const open = useStore(commandStore, (state) => state.open);
+  const setOpen = useEffectEvent(
+    (open: boolean | ((open: boolean) => boolean)) => {
+      if (typeof open === "boolean") return commandStore.setState({ open });
+      else commandStore.setState((state) => ({ open: open(state.open) }));
+    },
+  );
   const router = useRouter();
   const isOpenRef = useRef(false);
   isOpenRef.current = open;

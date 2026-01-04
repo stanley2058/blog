@@ -6,6 +6,7 @@ import {
   LucideMonitor,
   LucideMoon,
   LucidePaintBucket,
+  LucideSearch,
   LucideSun,
 } from "lucide-react";
 import Link from "next/link";
@@ -13,8 +14,10 @@ import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
+import { commandStore } from "./BlogCommands";
 import { Circle } from "./Circle";
 import { Button } from "./ui/button";
+import { Kbd } from "./ui/kbd";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 
 export function Navbar({ className }: { className?: string }) {
@@ -58,6 +61,8 @@ export function Navbar({ className }: { className?: string }) {
       <span className="grow" aria-hidden />
 
       <span className="flex flex-row items-center justify-center gap-0.5">
+        <SearchButton />
+
         <Popover open={showThemeSwitcher} onOpenChange={setShowThemeSwitcher}>
           <PopoverTrigger asChild>
             <Button
@@ -175,5 +180,19 @@ function MobileNavMenu() {
         </NavLink>
       </PopoverContent>
     </Popover>
+  );
+}
+
+function SearchButton() {
+  return (
+    <Button
+      variant="outline"
+      size="sm"
+      className="hidden border-input/20! bg-muted! hocus:bg-secondary/40! sm:flex"
+      onClick={() => commandStore.setState({ open: true })}
+    >
+      <LucideSearch />
+      <Kbd>⌘K</Kbd>
+    </Button>
   );
 }
