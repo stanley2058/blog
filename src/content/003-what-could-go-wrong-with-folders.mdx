@@ -1,0 +1,463 @@
+import { Img } from "@/components/Img";
+import { Spoiler } from "@/components/Spoiler";
+
+# What Could Go Wrong With Folders?
+
+This is a story about how I survived through a disastrous folder system and what I've learned from it.
+## The Outage
+
+We were having a chill year-end party, everyone was playing table games and chatting. Then, a sharp ping hit the Slack channel — prod is down.
+
+A quick scan over our AWS dashboard showed that our Redis was running out of memory and crashing. Our newly developed feature, realtime folders, had just gone online a week ago and uses Redis for syncing under the hood. Maybe too many users were trying out this new feature, we thought.
+
+To slap a quick band-aid to recover prod, we vertically and horizontally scaled the processing worker to effectively 10x the capacity. But something wasn't right — the unprocessed messages in Redis were still piling up, just not as fast as before, and users were starting to complain about broken folders and missing notes.
+
+A folder is a pretty common feature across various products. What could go so terribly wrong that even 10x the capacity cannot fix it?
+
+## Our Folder System
+
+Before I uncover the underlying problem and the solution, let's first understand how our folder system is designed.
+Here at HackMD, our core value is realtime collaboration (e.g., our note editor). So, from the very beginning, we designed it on top of CRDT (Conflict-free replicated data type), a conflict-free realtime synchronization algorithm.
+
+// insert interactive demo here
+
+We settled on a JS implementation, Yjs, and one of its transport layers, y-redis. Since we were already using Socket.IO, we created a fork to swap out the WebSocket layer with Socket.IO. The overall architecture looks like this:
+
+<Img
+  src="/images/003/01-overall.dark.svg"
+  alt="overall architecture"
+  width="500px"
+  className="hidden dark:block"
+/>
+<Img
+  src="/images/003/01-overall.light.svg"
+  alt="overall architecture"
+  width="500px"
+  className="dark:hidden"
+/>
+
+With the current setup, everything seemed fine in our local development environment. There were some slight hiccups on the staging server, but those were squashed and fixed. At the time, it was close to the year end (Lunar New Year approaching), so we had to pack things up and prepare to ship it to prod without having had a chance to stress test it first.
+
+Not even a week into the deployment, we already had a lot of problems. Folder operations not persisting, notes disappearing, workspaces not loading, and our server failing to keep up with all of this without us having much insight into what was actually happening.
+
+## We re-architected y-redis
+
+Of course rewriting the thing would fix it. But rewriting requires a fundamental understanding of the domain and a lot of testing to ensure compatibility, hence it's usually a last resort. Why and how did we end up here? Well, let me introduce you to the y-redis architecture first.
+
+### y-redis overview
+
+y-redis uses a server/worker split:
+
+- Servers handle auth and websocket fanout, writing Yjs updates to Redis streams, and replaying state for initial sync.
+- Workers consume stream-compaction tasks to persist merged document state and clean up Redis.
+
+<Img
+  src="/images/003/02-y-redis-arch.dark.svg"
+  alt="detailed y-redis architecture"
+  className="hidden dark:block"
+/>
+<Img
+  src="/images/003/02-y-redis-arch.light.svg"
+  alt="detailed y-redis architecture"
+  className="dark:hidden"
+/>
+
+Seems fine, right? The server is stateless, probably easily scalable. Workers are split into consumer groups, which also sounds scalable. So, what's the problem here? Let's do a quick estimation on how many servers and workers we'll need to handle a production workload.
+
+Say we have 10,000 active rooms (in our design, a workspace is a y-redis room), each doing 1 message per second with default settings (`REDIS_TASK_DEBOUNCE=10s`). (`N` = rooms, `k` = clients)
+
+- Servers: the y-redis server basically does nothing other than auth, so one server can handle a few thousand connections (fanout `F`). Based on `servers ~= 1.5 (safety) * N * k / F`, assuming an average room has 2–3 connected clients, and a server can handle 2,000 concurrent connections, we get `servers ~= 1.5 * 10000 * 2~3 / 2000 = 15~22.5`. Not unreasonable for about 20k to 30k connections.
+- Workers: Here's where things get interesting. Each worker is doing:
+  1. Claim task (`xAUTOCLAIM`).
+  2. Rebuild ydoc: Grab existing data from DB (persisted) and Redis (`xREAD`; transmitting buffer) and merge them together.
+  3. Persist to DB.
+  4. Re-queue the task and trim (`xTRIM`) the room messages.
+
+  We can combine that into a processing rate formula (tasks/sec):  
+  `P ~= 1 / (max(read redis, read store) + merge & rebuild ydoc + persist + trim & requeue)`
+
+  For a semi-realistic workload, we can assume:
+  - read redis: &lt;10ms
+  - read store: &lt;100ms
+  - merge & rebuild ydoc: &lt;50ms (time complexity of this operation is roughly O(msg))
+  - persist: &lt;100ms (we have pretty complex persistence logic: checking consistency, conflict resolution, etc.)
+  - trim & requeue: &lt;20ms
+  - total: &lt;300ms
+
+  In this setting, a typical worker has a processing rate of `3–5` (assuming total is 200–300ms). With the default debounce time 10s (task not claimable in 10s), we get `workers ~= N / (10 * P)` (without 1.5x safety), which translates into `workers ~= 10000/30~50 = 333~200`. Well, that's a lot of workers.
+
+Let's say we have a super fast database, so reading and writing are both sub-10ms operations. We still get a `~100ms` processing time, which translates into a `P` of `10`, and thus about `100` workers. Still a lot for 10,000 rooms and just 20 or so servers.
+
+### The problem
+
+This would have been just costly but fine (not really) if we had known we needed that many workers beforehand (which we didn't). Let's see how many workers we'd need if we under-provisioned at 10% for a day.
+
+Assume N=10,000, P=5, and we deployed 20 workers where we actually need 200. After 1 day under-provisioned:
+
+- Actual rate: 20 \* 5 = 100/sec
+- Deficit: 1,000 - 100 = 900/sec
+- Backlog after a day: 900 \* 86,400 = 77,760,000 compactions
+
+If we want to recover backlog in R days, required total workers: `W_total = (1000 + 900/R) / 5`. So workers to add (`W_total - 20`):
+
+- Recover in 1 day: total 380 (+360)
+- Recover in 2 days: total 290 (+270)
+- Recover in 7 days: total 226 (+206)
+
+And the worst thing? This calculation is **best case**. Remember that we are rebuilding ydoc in the worker? That has a cost of O(msg), so piling up unprocessed messages slows down the system even more, making `P` even smaller. With P halved, we'd need to add **740 workers** to recover in a day. Also, the worst case is unbounded.
+
+Can things get even worse? Yes — we under-provisioned for at least 7 days. Some of the rooms now took over a minute just to load, making the processing rate even worse — a negative feedback loop. Using our previously assumed numbers, we would have at least `544,320,000` backlogged compactions (we had way more than 1 msg/room/sec, so the real number was likely much bigger).
+
+### The fix
+
+The debugging stage was a disaster — nobody knew what was broken or where, and we didn't know we needed that many workers at the time. By the time we were 7 days in, I was so frustrated that I thought: "If the worker doesn't work, why don't we just throw that away?".
+
+And so I did.
+
+<Img
+  src="/images/003/03-y-socketio-arch.dark.svg"
+  alt="detailed y-socketio-redis architecture"
+  className="hidden dark:block"
+/>
+<Img
+  src="/images/003/03-y-socketio-arch.light.svg"
+  alt="detailed y-socketio-redis architecture"
+  className="dark:hidden"
+/>
+
+The transport layer is basically the same, but the server is now stateful, maintaining live ydoc copies of all connected workspaces. This allowed reactive in-place persistence instead of the original pulling/requeueing worker flow. I employed a RedLock-like election algorithm to choose a persist leader, making sure we only run persistence once per loaded workspace to avoid race conditions. Persistence itself is done in a worker thread collocated with the server and reused across different workspaces.
+
+How much better is this approach? Let's do some quick math. With active rooms `N=10,000`, message rate `m=1`, and the default debounce of `3s`.
+
+We can approximate this with the equation: `Servers = ((N * m) / debounce) / P`
+
+- Where `P` is `1 / L` (`L` is task duration in seconds), where `L` is usually below 0.1s for worker threads.
+  - Instead of reading from both Redis and our DB to rebuild ydoc, we can jump straight to persisting. On top of that, we also did some hardening on the data structure so we can remove most of the expensive checks in the persistence layer (I'll touch on this later in the article). So the actual number would be way lower than 100ms.
+- That gives us `Servers ~= 10,000 / 3 / (1/0.1) = 333`.
+
+But there's a big catch. The worker thread can persist different workspaces **concurrently**, and since the biggest cost here is the DB write, that gives us a huge improvement. The equation now becomes: `P = K / L`, where `K` is the max concurrent persisting tasks. Which gives us: `Servers ~= 10,000 / 3 / (10/0.1) = 33.3` (assuming K=10), way less than the previous requirement of over 200 workers in y-redis.
+
+For a more realistic workload after all the optimization, `L` is usually between `0.05` to `0.08`, which translates into 17 to 27 servers (last time I checked, we were running 10–20 servers).
+
+This change alone fixed the production outage and reduced the Redis memory usage significantly, and I successfully saved my Lunar New Year vacation.
+
+## Highly resilient folder data structure
+
+Earlier, I mentioned doing some hardening on the data structure so we could remove most of the expensive checks in the persistence layer. Let me walk you through what I did.
+
+### V1 folder tree
+
+To better understand the problem, let's first take a look at the v1 folder tree.
+
+The folder tree was our first attempt to implement a realtime collaborative folder system. The architecture was pretty straightforward — a simple struct inside a LWW (last-write-win) map. In this design, `children` includes all subfolders, and `notes` includes all notes in the folder.
+
+```ts
+type Folder = {
+  id: string;
+  name: string;
+  icon: string;
+  parentId: string;
+  children: string[];
+  notes: string[];
+  // ...other fields
+};
+
+type ClientId = string;
+type FolderTree = LWWMap<ClientId, Folder>;
+```
+
+Sounds reasonable enough — what could go wrong? Well, the LWW boundary is at the folder level instead of the field level. Let me illustrate the problem:
+
+#### Bad conflict resolution due to LWW granularity
+
+With this simple layout:
+
+```txt
+root
+├── folder1
+│   └── note1-1
+└── folder2
+    └── folder2-1
+```
+
+Two users, Alice and Bob, do the following at almost the same time:
+
+- Alice moves `note1-1` into `folder2` (at time `t1`)
+  This breaks down into two steps:
+  1. Remove `note1-1` from `folder1` (remove from `notes`)
+  2. Add `note1-1` into `folder2` (add to `notes`)
+  ```txt
+  root
+  ├── folder1 # changed @ t1
+  └── folder2 # changed @ t1
+      ├── note1-1
+      └── folder2-1
+  ```
+- Bob moves `folder2-1` into `root` (at time `t2`)
+  ```txt
+  root
+  ├── folder1
+  │   └── note1-1
+  ├── folder2 # changed @ t2
+  └── folder2-1 # changed @ t2
+  ```
+
+Here's the problem: if `t2` is slightly larger than `t1` and arrives just before `t1` has a chance to propagate to Bob's client:
+
+- On Alice's client after getting Bob's change: because `t2 > t1`, changes made to `folder2` are superseded by Bob's changes (moving `folder2-1` to `root` updates `children` on `folder2`).
+  1. Remove `note1-1` from `folder1` -> no conflict, accepted
+  2. Add `note1-1` into `folder2` -> conflict w/ Bob's change, **superseded**
+- On Bob's client after getting Alice's change: sync the change done to `folder1` (remove `note1-1`), others are the same as above.
+
+After this conflict resolution, we end up with this folder tree:
+
+```txt
+root
+├── folder1
+├── folder2
+└── folder2-1
+```
+
+`note1-1` is now completely invisible — gone from the entire tree.
+
+// insert interactive demo here
+
+#### Invalid state not handled
+
+What if we do something similar, but with folders instead of notes?
+
+With this very simple layout:
+
+```txt
+root
+├── folder1
+└── folder2
+```
+
+And the same two users, doing the following operations simultaneously:
+
+- Alice moves `folder1` into `folder2`
+- Bob moves `folder2` into `folder1`
+
+This time, since there's no conflict on any single folder, the result is exactly what you'd expect: `folder1` is moved into `folder2`, and `folder2` is moved into `folder1`.
+
+Now we have this — a cycle, detached from `root`.
+
+```txt
+root
+
+┌── folder1
+└── folder2
+```
+
+And everyone knows what happens to a disconnected component in a graph: it's unreachable, meaning the tree now looks like this to the users:
+
+```txt
+root
+```
+
+// insert interactive demo here
+
+#### Confusing data structure transformation
+
+Because the folder tree data structure and the actual backend data layer were implemented by different people, the results were a bit all over the place.
+
+For example, the "folder data structure" has three different representations across the database, the logic living in `fp-ts`, and the output structure the frontend code actually uses. The most painful point was that there's an explicit `root` folder (`parentId === 'root'`) in the `fp-ts` logic and the frontend code, while `parentId === null` means the folder is in `root` on the backend.
+
+So we literally had these:
+
+```ts
+// backend
+const parentFolderId = folder.parentId === "root" ? null : folder.parentId;
+
+// frontend
+const parentFolderId = folder.parentId ?? "root";
+```
+
+### V2 folder core
+
+With how folder tree was implemented and the LWW structure we were using, both problems mentioned above were very hard to fix without creating more issues.
+
+<Spoiler title="Why they are not really fixable?">
+#### LWW granularity and per field sync
+
+The LWW data structure we were using, `LWWMap`, is a wrapper around `Y.Array`, and due to how Yjs works, it's impossible to put a `Y.Map` inside a `LWWMap`.
+
+To enable per-field LWW behavior, we need to use `Y.Map` to represent the actual folder structure, but `Y.Map` cannot be put in a plain JS object — doing that breaks Yjs sync. And since `LWWMap` is actually doing `type LWWMap<V> = Y.Array<{ Key: string, Value: V, Timestamp }>` internally, we cannot use a `Y.Map` in combination with it.
+
+#### Cyclic dependency and invalid states
+
+The folder tree logic is unnecessarily complicated. The data structure alone has three different representations; the logic is partially in `fp-ts` with a separate 1:1 class-interface wrapper.
+
+Adding a single guardrail here would require changing at least two files. With no guarantee of fixing all the problems, I figured re-architecting the whole system from the ground up with robustness in mind would be the safer bet.
+</Spoiler>
+
+To fix all the issues, I redesigned the folder sync data structure from the ground up, incorporating invalid state recovery from day one.
+
+#### Fine-grained per field sync
+
+To allow per-field sync, I devised a new nested data structure that uses `Y.Map` directly inside `Y.Array` to represent metadata. Like the `LWWMap` in the folder tree, a top-level append-only `Y.Array` retains history entries (so we can actually do LWW). The key difference is using a `Y.Map` instead of a plain object for the field value.
+
+```ts
+// NOTE: this is pseudocode
+
+// LWWMap
+Y.Array<[{Key,Value,Timestamp}, ..., {Key,Value,Timestamp}]>
+
+// My data structure; metadata like timestamps are stored in the Y.Map as field values
+Y.Array<[Y.Map<Value>, ..., Y.Map<Value>]>
+
+// For folder per field sync
+type Folder = Y.Map<any>; // updating individual fields on Y.Map is safe and syncable
+Y.Array<[Y.Map<Folder>, ..., Y.Map<Folder>]>
+```
+
+This let me put any Yjs primitive inside the array field, including a nested `Y.Map`. Using a nested `Y.Map` for the actual folder data finally enabled per-field fine-grained LWW sync.
+
+#### Handling invalid states
+
+To eliminate all invalid states, the new core structure runs a quick check-and-fix operation immediately after applying an update.
+
+- Folder with parent that doesn't exist in tree
+  - -> Re-parent folder to root
+- Note with parent that doesn't exist in tree
+  - -> Re-parent note to root
+- Cyclic dependent folders
+  - -> Re-parent any of the folders to root to break the cycle
+
+The explicit `root` folder is also gone — any folder without a `parentId` is simply attached to root. Same goes for notes: the folder ↔ notes relation is now stored as a single map (`Map<noteId, folderId>`). Notes automatically fall back to root if not present in the relation map.
+
+The new structure also dropped the `notes` and `children` arrays, and now aligns closely with the data model actually stored in the DB.
+
+```diff
+type FullFolderMeta = {
+-  id?: string;
++  id: string;
++  clientId: string;
+  name: string;
+  icon?: string | null;
+-  parentId: string;
++  parentId?: string | null;
+-  children: string[];
+-  notes: string[];
+  // ...other fields
+};
+```
+
+Let's revisit the earlier example of Alice and Bob moving folders into each other. Right after the first sync, we still get this:
+
+```txt
+root (not real)
+
+┌── folder1 (parentId: folder2)
+└── folder2 (parentId: folder1)
+```
+
+Then immediately after, the update hook runs and breaks the cycle (order is deterministic):
+
+```txt
+root (not real)
+├── folder1 (parentId: null)
+└── folder2 (parentId: folder1)
+```
+
+// insert interactive demo here; or just a diagram
+
+#### Additional hardening
+
+There are a few more things I did to further harden the whole system, including but not limited to:
+
+- Simplifying the core operation APIs: fewer APIs means less surface area to test and maintain
+  - `create` -> `upsert`
+  - `update` -> `upsert`
+  - `move` -> `upsert`
+  - `addNoteToFolder` -> `moveNoteToFolder`
+  - `moveNoteToFolder` -> `moveNoteToFolder`
+  - `removeNoteFromFolder` -> `moveNoteToFolder`
+- Client out-of-sync detection
+  - Yjs assumes the transport layer is reliable and doesn't account for dropped packets or lost client updates. However, our system is complex, and client network conditions are unpredictable. So I designed a fallback mechanism to protect folder state and auto-heal client out-of-sync issues.
+  - In the new system, the client waits for an ACK after sending an update, and only continues to sync after receiving it. If three retries still fail, the client deems itself out of sync and requests the latest authoritative data from the server to overwrite local state. This mechanism significantly reduces the chance of the server receiving out-of-sync data and lowers the risk of clients hitting infinite reload loops.
+- Client reconnection recovery
+  - The old folder transport layer didn't handle disconnection correctly — it just hard-refreshed when the user came back online. I reworked it so the new transport layer can instantiate a proper handshake with the server without needing a hard refresh.
+
+### Validation
+
+To ensure correctness and reliability beyond normal unit and integration tests, I employed a simulation testing strategy to catch edge cases that traditional tests would miss.
+
+> This idea was inspired by TigerBeetle's testing approach:
+> - [Simulation Testing](https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/internals/ARCHITECTURE.md#simulation-testing)
+> - [Tiger Style](https://github.com/tigerbeetle/tigerbeetle/blob/main/docs/TIGER_STYLE.md)
+
+Seeded with a Linear Congruential Generator (LCG), every operation in the simulator is fully replayable. I then ran randomized tests based on the LCG output. The seed, input, output, and errors were all recorded per round, allowing me to quickly reproduce the exact error that crashed the simulation.
+
+Pseudo decision tree:
+
+```txt
+runSimulation(seed):
+  rng = LCG(seed)
+  clients = createClients(count = rng.int(2..5))
+
+  repeat 1000 times:
+    actor = rng.pick(clients)
+    action = weightedPick(rng, {
+      create, delete, update, reparent,
+      moveNotes, batchUpdate, noOp, query
+    })
+
+    if action == create:
+      actor.createFolder(randomName(rng), randomParent(rng))
+    if action == delete:
+      actor.deleteFolder(randomFolder(rng))
+    if action == update:
+      actor.updateFolder(randomFolder(rng), randomPatch(rng))
+    if action == reparent:
+      actor.moveFolder(randomFolder(rng), randomParent(rng))
+    if action == moveNotes:
+      actor.moveNotes(randomNotes(rng), randomFolderOrRoot(rng))
+    if action == batchUpdate:
+      actor.updateMany(randomFolderSubset(rng), randomPatch(rng))
+    if action == noOp:
+      actor.writeSomethingThatShouldChangeNothing()
+    if action == query:
+      actor.readPathDepthOrChildren(randomFolder(rng))
+
+    occasionally check basic invariants
+
+  waitUntilAllClientsResync()
+  assert all clients converge to same final shape
+```
+
+Some issues surfaced after multiple simulation runs; I fixed them and kept running until the simulations stopped crashing. After running millions of simulations with multi-client concurrent operations, I was pretty confident that the new folder core structure wouldn't produce any invalid state.
+
+## Rollout, migration, and observability
+
+To allow a zero-downtime migration from folder tree (v1) to folder core (v2), I designed a two-mode traffic router.
+
+- Shadow traffic: v1 remains the primary transport layer for all visible operations, while v2 connects in parallel, doing shadow reads and writes — just not surfaced to users.
+- Canary transportation: Users are divided into 16 buckets by the last hex digit of their UUID, and we serve different transport schemas to different buckets, allowing gradual enrollment.
+
+We first switched everyone to shadow traffic mode to auto-bootstrap the v2 folder core data structure. Once everything looked stable, we gradually enrolled users into the pure v2 schema, bucket by bucket.
+
+To improve observability, I also added an end-to-end trace logging system. The client creates a randomized trace ID for each connection, and all logs across frontend and backend for that session share the same trace ID, making connection issues much easier to debug.
+
+We still had some issues right after the complete v2 rollout, but since the v2 core was hardened and thoroughly tested, tracking down bugs was much easier — we could skip second-guessing whether the core data structure was at fault.
+
+<Img
+  src="/images/003/04-rough-data-flow.dark.svg"
+  alt="rought data flow diagram"
+  className="hidden dark:block"
+/>
+<Img
+  src="/images/003/04-rough-data-flow.light.svg"
+  alt="rought data flow diagram"
+  className="dark:hidden"
+/>
+
+## Wrapping up
+
+Welp, that was a wild ride. I learned a lot trying to survive all of this — if you asked me for a one-sentence summary, I'd say "never roll your own sync engine", just use [Convex](https://www.convex.dev/) or something.
+
+But for real, the biggest takeaway is that testing is really important — bet hard on it, especially for mission-critical parts. Testing should be part of the system design from the very start; otherwise you'll have a really hard time trying to add it later.
+
+Finally, I hope you found this article interesting — and I sincerely hope you never find yourself in a position that needs any of this.
+

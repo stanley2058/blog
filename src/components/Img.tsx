@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 export function Img({
   width,
   height,
+  className,
   ...rest
 }: Omit<ComponentProps<typeof Image>, "width" | "height"> & {
   width?: string | number;
@@ -14,7 +15,7 @@ export function Img({
     <Image
       width={400}
       height={300}
-      className="rounded-md border border-border border-solid"
+      className={cn("rounded-md border border-border border-solid", className)}
       sizes="100vw"
       style={{ width: width ?? "100%", height: height ?? "auto" }}
       {...rest}
