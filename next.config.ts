@@ -18,6 +18,45 @@ const nextConfig: NextConfig = {
     ],
   },
   cacheComponents: true,
+  async headers() {
+    return [
+      {
+        source: "/",
+        headers: [
+          {
+            key: "Link",
+            value: '</llms.txt>; rel="describedby"; type="text/markdown"',
+          },
+        ],
+      },
+      {
+        source: "/articles/:slug",
+        headers: [
+          {
+            key: "Link",
+            value:
+              '</articles/raw/:slug>; rel="describedby"; type="text/markdown"',
+          },
+        ],
+      },
+    ];
+  },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/llms.txt",
+        permanent: false,
+        has: [
+          {
+            type: "header",
+            key: "accept",
+            value: ".*text/markdown.*",
+          },
+        ],
+      },
+    ];
+  },
   async rewrites() {
     return [
       {
