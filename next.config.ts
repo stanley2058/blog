@@ -55,6 +55,18 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: "/articles/:slug",
+        destination: "/articles/raw/:slug",
+        permanent: false,
+        has: [
+          {
+            type: "header",
+            key: "accept",
+            value: ".*text/markdown.*",
+          },
+        ],
+      },
     ];
   },
   async rewrites() {
@@ -66,17 +78,6 @@ const nextConfig: NextConfig = {
       {
         source: "/ph/:path*",
         destination: "https://us.i.posthog.com/:path*",
-      },
-      {
-        source: "/articles/:slug",
-        destination: "/articles/raw/:slug",
-        has: [
-          {
-            type: "header",
-            key: "accept",
-            value: ".*text/markdown.*",
-          },
-        ],
       },
     ];
   },
