@@ -42,32 +42,7 @@ const nextConfig: NextConfig = {
     ];
   },
   async redirects() {
-    return [
-      {
-        source: "/",
-        destination: "/llms.txt",
-        permanent: false,
-        has: [
-          {
-            type: "header",
-            key: "accept",
-            value: ".*text/markdown.*",
-          },
-        ],
-      },
-      {
-        source: "/articles/:slug",
-        destination: "/articles/raw/:slug",
-        permanent: false,
-        has: [
-          {
-            type: "header",
-            key: "accept",
-            value: ".*text/markdown.*",
-          },
-        ],
-      },
-    ];
+    return [];
   },
   async rewrites() {
     return [
