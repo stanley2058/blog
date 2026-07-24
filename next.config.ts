@@ -21,6 +21,19 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/prismatic/v1/:path*",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "*",
+          },
+        ],
+      },
+      {
         source: "/",
         headers: [
           {

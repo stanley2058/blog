@@ -63,7 +63,7 @@ export function TableOfContent() {
       ref={selfRef}
       className={cn(
         "-translate-x-1/2 fixed top-0 left-1/2 z-10 h-full w-full",
-        "max-w-[calc(100%-40px)] px-5 md:max-w-[808px] md:px-10",
+        "max-w-[calc(100%-40px)] px-5 md:max-w-280 md:px-10",
         "pointer-events-none",
       )}
     >
