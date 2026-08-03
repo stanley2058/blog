@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { build } from "esbuild";
 
-const outdir = "public/prismatic/v1";
+const outdir = "public/prismatic/v2";
 await mkdir(outdir, { recursive: true });
 
 const shared = {

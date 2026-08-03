@@ -225,6 +225,10 @@ button,
   gap: 28px;
 }
 
+.topbar + main {
+  margin-top: 28px;
+}
+
 .topbar {
   position: sticky;
   top: 10px;
@@ -720,7 +724,8 @@ summary {
 }
 
 .prose {
-  max-width: 72ch;
+  max-width: 111ch;
+  min-width: 0;
 }
 
 .prose h2,

@@ -6,7 +6,7 @@ const skillDirectory =
   process.env.PRISMATIC_SKILL_DIR ||
   join(homedir(), ".agents/skills/prismatic-terminal-ui");
 const assetDirectory = join(skillDirectory, "assets");
-const bundleDirectory = "public/prismatic/v1";
+const bundleDirectory = "public/prismatic/v2";
 
 await mkdir(assetDirectory, { recursive: true });
 await Promise.all(
