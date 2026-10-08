@@ -30,17 +30,25 @@ function syncThemeControls() {
 }
 
 function initTheme() {
-  const saved = localStorage.getItem(THEME_KEY);
-  if (saved === "light" || saved === "dark") {
-    document.documentElement.dataset.theme = saved;
+  try {
+    const saved = localStorage.getItem(THEME_KEY);
+    if (saved === "light" || saved === "dark") {
+      document.documentElement.dataset.theme = saved;
+    }
+  } catch {
+    // Sandboxed frames can deny access to localStorage itself.
   }
 
   for (const button of document.querySelectorAll(TOGGLE_SELECTOR)) {
     button.addEventListener("click", () => {
       const next = currentTheme() === "dark" ? "light" : "dark";
       document.documentElement.dataset.theme = next;
-      localStorage.setItem(THEME_KEY, next);
       syncThemeControls();
+      try {
+        localStorage.setItem(THEME_KEY, next);
+      } catch {
+        // Keep the selected theme usable when persistence is unavailable.
+      }
     });
   }
 

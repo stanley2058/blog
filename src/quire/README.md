@@ -8,18 +8,27 @@ agent skill.
 - `quire.css` contains the complete visual system and responsive layout.
 - `quire.js` contains theme controls plus bundled GFM rendering and HTML
   sanitizing.
-- Next serves the generated files from `/quire/v1/` with immutable cache
+- Next serves the generated files from `/quire/v2/` with immutable cache
   headers and permissive cross-origin access.
 
 The deployed public contract is:
 
 ```html
-<link rel="stylesheet" href="https://blog.stw.tw/quire/v1/quire.css">
-<script defer src="https://blog.stw.tw/quire/v1/quire.js"></script>
+<link rel="stylesheet" href="https://blog.stw.tw/quire/v2/quire.css">
+<script defer src="https://blog.stw.tw/quire/v2/quire.js"></script>
 ```
 
 Colors use `light-dark()`, which needs Chrome 123, Firefox 120, or Safari
 17.5 or newer.
+
+## Sandboxed embedding
+
+Quire v2 supports iframes with `sandbox="allow-scripts"`; `allow-same-origin`
+is optional. When storage is blocked, Markdown still renders and theme controls
+work for the current page without persisting the selection. With storage
+available, the runtime continues to save the theme under `quire-theme`.
+
+Existing pages must update their asset URLs to `/quire/v2/` to receive this fix.
 
 ## Commands
 

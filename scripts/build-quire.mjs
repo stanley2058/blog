@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { build } from "esbuild";
 
-const outdir = "public/quire/v1";
+const outdir = "public/quire/v2";
 await mkdir(outdir, { recursive: true });
 
 const shared = {

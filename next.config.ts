@@ -47,7 +47,7 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: "/quire/v1/:path*",
+        source: "/quire/:version(v1|v2)/:path*",
         headers: [
           {
             key: "Cache-Control",

@@ -5,7 +5,7 @@ import { join } from "node:path";
 const skillDirectory =
   process.env.QUIRE_SKILL_DIR || join(homedir(), ".agents/skills/quire");
 const assetDirectory = join(skillDirectory, "assets");
-const bundleDirectory = "public/quire/v1";
+const bundleDirectory = "public/quire/v2";
 
 await mkdir(assetDirectory, { recursive: true });
 await Promise.all(
