@@ -4,9 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm build:prismatic && next build",
-    "build:prismatic": "node scripts/build-prismatic.mjs",
-    "sync:prismatic-skill": "pnpm build:prismatic && node scripts/sync-prismatic-skill.mjs",
+    "build": "pnpm build:quire && next build",
+    "build:quire": "node scripts/build-quire.mjs",
+    "sync:quire-skill": "pnpm build:quire && node scripts/sync-quire-skill.mjs",
     "start": "next start",
     "lint": "biome check"
   },

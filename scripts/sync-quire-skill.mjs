@@ -3,14 +3,13 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 
 const skillDirectory =
-  process.env.PRISMATIC_SKILL_DIR ||
-  join(homedir(), ".agents/skills/prismatic-terminal-ui");
+  process.env.QUIRE_SKILL_DIR || join(homedir(), ".agents/skills/quire");
 const assetDirectory = join(skillDirectory, "assets");
-const bundleDirectory = "public/prismatic/v2";
+const bundleDirectory = "public/quire/v1";
 
 await mkdir(assetDirectory, { recursive: true });
 await Promise.all(
-  ["prismatic.css", "prismatic.js", "THIRD_PARTY_LICENSES.txt"].map((file) =>
+  ["quire.css", "quire.js", "THIRD_PARTY_LICENSES.txt"].map((file) =>
     copyFile(join(bundleDirectory, file), join(assetDirectory, file)),
   ),
 );

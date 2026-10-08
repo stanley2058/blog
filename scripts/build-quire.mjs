@@ -1,7 +1,7 @@
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { build } from "esbuild";
 
-const outdir = "public/prismatic/v2";
+const outdir = "public/quire/v1";
 await mkdir(outdir, { recursive: true });
 
 const shared = {
@@ -14,14 +14,14 @@ const shared = {
 await Promise.all([
   build({
     ...shared,
-    entryPoints: ["src/prismatic/prismatic.js"],
+    entryPoints: ["src/quire/quire.js"],
     format: "iife",
-    outfile: `${outdir}/prismatic.js`,
+    outfile: `${outdir}/quire.js`,
   }),
   build({
     ...shared,
-    entryPoints: ["src/prismatic/prismatic.css"],
-    outfile: `${outdir}/prismatic.css`,
+    entryPoints: ["src/quire/quire.css"],
+    outfile: `${outdir}/quire.css`,
   }),
 ]);
 
@@ -35,4 +35,4 @@ await writeFile(
   ["marked", licenses[0], "DOMPurify", licenses[1]].join("\n\n"),
 );
 
-console.log(`Built ${outdir}/prismatic.{css,js}`);
+console.log(`Built ${outdir}/quire.{css,js}`);

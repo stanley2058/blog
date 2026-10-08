@@ -1,9 +1,9 @@
 import DOMPurify from "dompurify";
 import { marked } from "marked";
 
-const THEME_KEY = "prismatic-theme";
-const MARKDOWN_SELECTOR = "[data-prismatic-markdown]";
-const TOGGLE_SELECTOR = "[data-prismatic-theme-toggle]";
+const THEME_KEY = "quire-theme";
+const MARKDOWN_SELECTOR = "[data-quire-markdown]";
+const TOGGLE_SELECTOR = "[data-quire-theme-toggle]";
 
 marked.use({
   gfm: true,
@@ -153,18 +153,18 @@ export async function renderMarkdown(container) {
     hardenLinks(container);
 
     const firstHeading = container.querySelector("h1, h2");
-    if (document.title === "Prismatic document" && firstHeading?.textContent) {
+    if (document.title === "Quire document" && firstHeading?.textContent) {
       document.title = firstHeading.textContent.replace(/#$/, "").trim();
     }
 
     container.dispatchEvent(
-      new CustomEvent("prismatic:rendered", { bubbles: true }),
+      new CustomEvent("quire:rendered", { bubbles: true }),
     );
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown error";
-    container.innerHTML = `<div class="prismatic-error"><strong>Markdown did not render.</strong><br>${DOMPurify.sanitize(message)}</div>`;
+    container.innerHTML = `<div class="quire-error"><strong>Markdown did not render.</strong><br>${DOMPurify.sanitize(message)}</div>`;
     container.dispatchEvent(
-      new CustomEvent("prismatic:error", {
+      new CustomEvent("quire:error", {
         bubbles: true,
         detail: { error },
       }),
@@ -183,7 +183,7 @@ export function init() {
   );
 }
 
-window.PrismaticUI = { init, renderMarkdown };
+window.Quire = { init, renderMarkdown };
 
 if (document.readyState === "loading") {
   document.addEventListener("DOMContentLoaded", init, { once: true });
